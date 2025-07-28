@@ -9,7 +9,7 @@
                     <v-btn 
                     prepend-icon="mdi-plus"
                   
-                   
+                    @click="opendialog"
                     variant="outlined"
                     width="200px"
                      size="large"
@@ -18,7 +18,95 @@
                  Add Category
                         
                     </v-btn>
-                     
+                      <div class="pa-4 text-center">
+    <v-dialog
+      v-model="dialog"
+      max-width="600"
+    >
+     
+      <v-card>
+       
+      <v-card-title>
+        <span class="text-indigo">
+        Category</span>
+        <span class="float-right"><v-icon @click="closedialog">mdi-close-circle</v-icon></span>
+
+      </v-card-title>
+      
+        <v-card-text>
+          <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Category name*"
+                variant="outlined"
+                color="grey-darken-2"
+                v-model="form.categoryName"
+                required
+              ></v-text-field>
+            </v-col>
+         </v-row>
+          <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+            <v-select
+            v-model="form.categoryStatus"
+  label="Select"
+  :items="['Active', 'Inactive']"
+  variant="outlined"
+></v-select>
+            </v-col>
+            <v-row>
+                <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+               <v-container fluid>
+    <v-textarea
+      autocomplete="email"
+      v-model="form.categoryDescription"
+      label="Category description"
+      clearable
+      variant="outlined"
+    ></v-textarea>
+  </v-container>
+            </v-col>
+            </v-row>
+         </v-row>
+          <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+          <v-file-upload v-model="form.categoryImage" clearable density="default" title="Drag and drop Category Image"></v-file-upload>
+            </v-col>
+            
+         </v-row>
+        </v-card-text>
+           
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+         
+          <v-btn
+             class="bg-indigo text-white text-capitalize"
+            :text="isediting ? 'Create Category' : 'Update Category'"
+            variant="tonal"
+            @click="submitCategory"
+          ></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
             </v-card-text>
          </v-card>
       
@@ -63,6 +151,22 @@
     item-value="name"
     @update:options="loadItems"
   >
+  <template v-slot:item.categoryImage="{ item }">
+    <v-img :src="getImageUrl(item.categoryImage)" max-width="70" max-height="70"></v-img>
+  </template>
+  <template v-slot:item.categoryStatus="{item}">
+    <v-chip :color="item.categoryStatus == 'Active' ? 'green' : 'red'"
+            class="text-capitalize"
+            variant="outlined"
+            size="small">
+      {{ item.categoryStatus}}
+    </v-chip>
+  </template>
+  <template v-slot:item.actions="{ item,value }">
+
+   <v-btn prepend-icon="mdi-pencil" @click="opendialog(item)" variant="outlined" size="small" class="text-capitalize bg-indigo ma-3">Edit</v-btn>
+    <v-icon size="small" @click="deletecategory(item.id)">mdi-trash-can-outline</v-icon>
+  </template>
   
 </v-data-table-server>
             </v-card-text>
@@ -75,88 +179,30 @@
 <script setup>
   import { ref } from 'vue'
   import HeaderComponent from '@/components/HeaderComponent.vue'
-  const desserts = [
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-      fat: 6,
-      carbs: 24,
-      protein: 4,
-      iron: '1',
-    },
-    {
-      name: 'Jelly bean',
-      calories: 375,
-      fat: 0,
-      carbs: 94,
-      protein: 0,
-      iron: '0',
-    },
-    {
-      name: 'KitKat',
-      calories: 518,
-      fat: 26,
-      carbs: 65,
-      protein: 7,
-      iron: '6',
-    },
-    {
-      name: 'Eclair',
-      calories: 262,
-      fat: 16,
-      carbs: 23,
-      protein: 6,
-      iron: '7',
-    },
-    {
-      name: 'Gingerbread',
-      calories: 356,
-      fat: 16,
-      carbs: 49,
-      protein: 3.9,
-      iron: '16',
-    },
-    {
-      name: 'Ice cream sandwich',
-      calories: 237,
-      fat: 9,
-      carbs: 37,
-      protein: 4.3,
-      iron: '1',
-    },
-    {
-      name: 'Lollipop',
-      calories: 392,
-      fat: 0.2,
-      carbs: 98,
-      protein: 0,
-      iron: '2',
-    },
-    {
-      name: 'Cupcake',
-      calories: 305,
-      fat: 3.7,
-      carbs: 67,
-      protein: 4.3,
-      iron: '8',
-    },
-    {
-      name: 'Honeycomb',
-      calories: 408,
-      fat: 3.2,
-      carbs: 87,
-      protein: 6.5,
-      iron: '45',
-    },
-    {
-      name: 'Donut',
-      calories: 452,
-      fat: 25,
-      carbs: 51,
-      protein: 4.9,
-      iron: '22',
-    },
-  ]
+    import { toast } from 'vue-sonner';
+import axiosInst from '@/services/api.js'
+  const dialog = ref(false)
+  function opendialog(item){
+    dialog.value = true
+    form.value.categoryName = item.categoryName 
+     form.value.categoryDescription= item.categoryDescription
+    form.value.categoryStatus = item.categoryStatus
+    
+}
+  function closedialog(){
+    dialog.value = false
+  }
+
+
+const BASE_URL = 'http://localhost:8000'; // Change to your backend URL
+
+function getImageUrl(path) {
+  if (!path) return '';
+  // If path is already absolute, return as is
+  if (path.startsWith('http')) return path;
+  return BASE_URL + path;
+}
+  
   const FakeAPI = {
     async fetch ({ page, itemsPerPage, sortBy }) {
       return new Promise(resolve => {
@@ -178,20 +224,51 @@
         }, 500)
       })
     },
+}
+let form = ref({
+  categoryName:'',
+  categoryStatus:'',
+  categoryDescription:'',
+  categoryImage:null,
+}
+  
+)
+const isediting = ref(false)
+  function submitCategory(){
+     isediting.value = true
+const formdata = new FormData();
+formdata.append('categoryName', form.value.categoryName);
+formdata.append('categoryStatus', form.value.categoryStatus);
+formdata.append('categoryDescription', form.value.categoryDescription);
+if (form.value.categoryImage) {
+  formdata.append('categoryImage', form.value.categoryImage);
+}
+axiosInst.post(`api/categories/`,formdata,{
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
+})
+.then(response => {
+  toast.success('Category created successfully!');
+  console.log('Category created successfully:', response.data);
+  dialog.value = false; // Close the dialog after successful submission
+})
+.catch(error => {
+  console.error('Error creating category:', error);
+    toast.error('Failed to create category. Please try again.');
+}); 
   }
   const itemsPerPage = ref(5)
   const headers = ref([
     {
-      title: 'Dessert (100g serving)',
+      title: 'Image',
       align: 'start',
       sortable: false,
-      key: 'name',
+      key: 'categoryImage',
     },
-    { title: 'Customer', key: 'calories', align: 'end' },
-    { title: 'Email', key: 'fat', align: 'end' },
-    { title: 'Location', key: 'carbs', align: 'end' },
-    { title: 'Orders', key: 'protein', align: 'end' },
-    { title: 'Spent',key:'actions', align: 'end' },
+    { title: 'Category Name', key: 'categoryName', align: 'end' },
+    { title: 'Category Status', key: 'categoryStatus', align: 'end' },
+    { title: 'Category Description', key: 'categoryDescription', align: 'end' },
      { title: 'Action',key:'actions', align: 'end' },
     ])
   const search = ref('')
@@ -200,10 +277,35 @@
   const totalItems = ref(0)
   function loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
-    FakeAPI.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-      serverItems.value = items
-      totalItems.value = total
-      loading.value = false
-    })
+    axiosInst.get(`api/categories/`, {
+        params: {
+          page,
+          itemsPerPage,
+          sortBy: sortBy.length ? sortBy[0].key : undefined,
+        },
+      })
+      .then(response => {
+        serverItems.value = response.data.results || response.data;
+        totalItems.value = response.data.total;
+        loading.value = false;
+      })
+      .catch(error => {
+        console.error('Error fetching items:', error);
+        loading.value = false;
+      });
+     
   }
+ function deletecategory(item){
+  try{
+  axiosInst.delete(`api/categorydetail/${item}/`)
+  
+    toast.success('Category deleted successfully!');
+    loadItems({ page: 1, itemsPerPage: itemsPerPage.value, sortBy: [] });
+  }catch (error) {
+
+    console.error('Error deleting category:', error);
+    toast.error('Failed to delete category. Please try again.');
+  }
+
+ }
 </script>

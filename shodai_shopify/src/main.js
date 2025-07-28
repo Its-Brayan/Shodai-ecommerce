@@ -1,5 +1,6 @@
 
  import '@mdi/font/css/materialdesignicons.css';
+ import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import 'vuetify/styles'
@@ -13,7 +14,10 @@ import router from './router'
 
 const app = createApp(App)
 const vuetify = createVuetify({
-  components,
+  components:{
+    ...components,
+    VFileUpload, // Registering the VFileUpload component
+  },
   directives,
 })
 
