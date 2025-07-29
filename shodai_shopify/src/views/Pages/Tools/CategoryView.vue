@@ -9,7 +9,7 @@
                     <v-btn 
                     prepend-icon="mdi-plus"
                   
-                    @click="opendialog"
+                    @click="opendialog()"
                     variant="outlined"
                     width="200px"
                      size="large"
@@ -99,7 +99,7 @@
          
           <v-btn
              class="bg-indigo text-white text-capitalize"
-            :text="isediting ? 'Create Category' : 'Update Category'"
+            :text="isediting ? 'Update Category' : 'Create Category'"
             variant="tonal"
             @click="submitCategory"
           ></v-btn>
@@ -182,12 +182,23 @@
     import { toast } from 'vue-sonner';
 import axiosInst from '@/services/api.js'
   const dialog = ref(false)
+  const categoryid = ref(null)
   function opendialog(item){
     dialog.value = true
+    if(item){
+      isediting.value = true
+      categoryid.value = item.id
     form.value.categoryName = item.categoryName 
      form.value.categoryDescription= item.categoryDescription
     form.value.categoryStatus = item.categoryStatus
-    
+    }else{
+      isediting.value = false
+      form.value.categoryName = ''
+      form.value.categoryDescription = ''
+      form.value.categoryStatus = ''
+      form.value.categoryImage = null
+
+    }
 }
   function closedialog(){
     dialog.value = false
@@ -235,14 +246,15 @@ let form = ref({
 )
 const isediting = ref(false)
   function submitCategory(){
-     isediting.value = true
-const formdata = new FormData();
+    const formdata = new FormData();
 formdata.append('categoryName', form.value.categoryName);
 formdata.append('categoryStatus', form.value.categoryStatus);
 formdata.append('categoryDescription', form.value.categoryDescription);
 if (form.value.categoryImage) {
   formdata.append('categoryImage', form.value.categoryImage);
 }
+  if(!isediting.value){
+
 axiosInst.post(`api/categories/`,formdata,{
   headers: {
     'Content-Type': 'multipart/form-data',
@@ -257,6 +269,22 @@ axiosInst.post(`api/categories/`,formdata,{
   console.error('Error creating category:', error);
     toast.error('Failed to create category. Please try again.');
 }); 
+  }else{
+      axiosInst.put(`api/categorydetail/${categoryid.value}/`,formdata,{
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        toast.success('Category updated successfully!');
+        console.log('Category updated successfully:', response.data);
+        dialog.value = false; // Close the dialog after successful submission
+      })
+      .catch(error => {
+        console.error('Error updating category:', error);     
+        toast.error('Failed to update category. Please try again.');
+      });
+  }
   }
   const itemsPerPage = ref(5)
   const headers = ref([
@@ -300,11 +328,24 @@ axiosInst.post(`api/categories/`,formdata,{
   axiosInst.delete(`api/categorydetail/${item}/`)
   
     toast.success('Category deleted successfully!');
-    loadItems({ page: 1, itemsPerPage: itemsPerPage.value, sortBy: [] });
+    loadItems({ page: 1, itemsPerPage: 10, sortBy: [] });
   }catch (error) {
 
     console.error('Error deleting category:', error);
     toast.error('Failed to delete category. Please try again.');
+  }
+
+ }
+ function updatecategory(page,itemsPerPage,sortBy,item){
+  try{
+  axiosInst.put(`api/categorydetail/${item}/`,form.value)
+  
+    toast.success('Category updated successfully!');
+    loadItems({ page: 1, itemsPerPage: itemsPerPage.value, sortBy: [] });
+  }catch (error) {
+
+    console.error('Error updating category:', error);
+    toast.error('Failed to update category. Please try again.');
   }
 
  }
