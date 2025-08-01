@@ -19,10 +19,13 @@ def create_category(request):
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-@api_view(['PUT', 'DELETE'])    
+@api_view(['GET','PUT', 'DELETE'])    
 def categoryDetail(request, id):
    
     category = Category.objects.get(id=id)
+    if request.method == 'GET':
+        serializer = CategorySerializer(category)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     if request.method == 'PUT':
         serializer = CategorySerializer(category, data=request.data)
         if serializer.is_valid():
@@ -35,7 +38,7 @@ def categoryDetail(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
     
 @api_view(['GET', 'POST'])
-def create_product(request,id):
+def create_product(request):
    
     if request.method == 'POST':
         serializer = ProductSerializer(data=request.data)
@@ -47,5 +50,17 @@ def create_product(request,id):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+@api_view(['PUT', 'DELETE'])
+def productDetail(request, id):
+    product = Product.objects.get(id=id)
+    if request.method == 'PUT':
+        serializer = ProductSerializer(product, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        product.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 # Create your views here.

@@ -86,7 +86,12 @@
               md="11"
               sm="10"
             >
-          <v-file-upload v-model="form.categoryImage" clearable density="default" title="Drag and drop Category Image"></v-file-upload>
+          <v-file-upload  v-model="form.categoryImage" clearable density="compact" title="Drag and drop Category Image"
+          ><div v-if="form.categoryImagePreview && !form.categoryImage" class="mt-2">
+            Hii
+  <v-img :src="getImageUrl(form.categoryImagePreview)" max-width="100" max-height="100" />
+</div>
+        </v-file-upload>
             </v-col>
             
          </v-row>
@@ -191,12 +196,15 @@ import axiosInst from '@/services/api.js'
     form.value.categoryName = item.categoryName 
      form.value.categoryDescription= item.categoryDescription
     form.value.categoryStatus = item.categoryStatus
+    form.value.categoryImage = null
+    form.value.categoryImagePreview = item.categoryImage
     }else{
       isediting.value = false
       form.value.categoryName = ''
       form.value.categoryDescription = ''
       form.value.categoryStatus = ''
       form.value.categoryImage = null
+      form.value.categoryImagePreview = ''
 
     }
 }
@@ -241,6 +249,7 @@ let form = ref({
   categoryStatus:'',
   categoryDescription:'',
   categoryImage:null,
+  categoryImagePreview:'',
 }
   
 )
@@ -336,17 +345,6 @@ axiosInst.post(`api/categories/`,formdata,{
   }
 
  }
- function updatecategory(page,itemsPerPage,sortBy,item){
-  try{
-  axiosInst.put(`api/categorydetail/${item}/`,form.value)
-  
-    toast.success('Category updated successfully!');
-    loadItems({ page: 1, itemsPerPage: itemsPerPage.value, sortBy: [] });
-  }catch (error) {
-
-    console.error('Error updating category:', error);
-    toast.error('Failed to update category. Please try again.');
-  }
-
- }
+ 
+ 
 </script>

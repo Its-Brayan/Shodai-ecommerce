@@ -37,7 +37,7 @@
                     <v-btn 
                     prepend-icon="mdi-plus"
                   
-                   
+                   @click="openDialog()"
                     variant="outlined"
                     width="200px"
                      size="large"
@@ -52,6 +52,149 @@
          </v-card>
          <v-card class="mt-3">
             <v-card-text>
+               <div class="pa-4 text-center">
+    <v-dialog
+      v-model="dialog"
+      max-width="600"
+    >
+     
+      <v-card>
+        <v-card-title>
+          <span><v-icon>mdi-cart-outline</v-icon></span>
+          <span> Product</span>
+        <span class="float-right"><v-icon @click="dialog=false">mdi-close-circle</v-icon></span>
+        </v-card-title>
+        <v-card-text>
+          <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Product Name*"
+                required
+                v-model="form.productName"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-text-field>
+            </v-col>
+            </v-row>
+              <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Product SKU*"
+                required
+                v-model="form.ProductSku"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-text-field>
+            </v-col>
+            </v-row>
+             <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-select
+                label="Product Category*"
+                required
+                :items="fetchedcategories"
+                v-model="form.productCategory"
+                item-title="categoryName"
+                item-value="id"
+              
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-select>
+            </v-col>
+            </v-row>
+             <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Purchase unit price*"
+                required
+                v-model="form.productPrice"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-text-field>
+            </v-col>
+            </v-row>
+             <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Number of products*"
+                required
+                v-model="form.ProductNumber"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-text-field>
+            </v-col>
+            </v-row>
+             <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-select
+                label="Status*"
+                :items="['Active', 'Inactive']"
+                required
+                v-model="form.productStatus"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-select>
+            </v-col>
+            </v-row>
+             <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-file-upload density="compact" v-model="form.productImage"></v-file-upload>
+
+            </v-col>
+            </v-row>
+        </v-card-text>
+
+      
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+     
+          <v-btn
+          
+            text="Submit"
+             class="bg-indigo text-white"
+            variant="tonal"
+            @click="submitproducts"
+          ></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
                 <v-row>
                     <v-col cols="3">
                         <p class="text-subtitle-2">Category</p>
@@ -115,8 +258,24 @@
     @update:options="loadItems"
   >
   <template v-slot:item.actions="{ item,value }">
-   <v-btn prepend-icon="mdi-pencil" variant="outlined" size="small" class="text-capitalize bg-indigo ma-3">Edit</v-btn>
-    <v-icon size="small">mdi-trash-can-outline</v-icon>
+   <v-btn prepend-icon="mdi-pencil" @click="openDialog(item)" variant="outlined" size="small" class="text-capitalize bg-indigo ma-3">Edit</v-btn>
+    <v-icon size="small" @click="deleteproduct(item.id)">mdi-trash-can-outline</v-icon>
+  </template>
+  <template v-slot:item.productStatus="{ item }">
+    <v-chip
+      :color="item.productStatus == 'Active' ? 'green' : 'red'"
+      text-color="white"
+    >
+      {{ item.productStatus }}
+    </v-chip>
+  </template>
+  <template v-slot:item.productImage="{ item }">
+    <v-img
+      :src="getImageUrl(item.productImage)"
+      max-width="50"
+      max-height="50"
+      contain
+    ></v-img>
   </template>
 </v-data-table-server>
             </v-card-text>
@@ -128,90 +287,34 @@
 
 <script setup>
 
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
-  const desserts = [
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-      fat: 6,
-      carbs: 24,
-      protein: 4,
-      iron: '1',
-    },
-    {
-      name: 'Jelly bean',
-      calories: 375,
-      fat: 0,
-      carbs: 94,
-      protein: 0,
-      iron: '0',
-    },
-    {
-      name: 'KitKat',
-      calories: 518,
-      fat: 26,
-      carbs: 65,
-      protein: 7,
-      iron: '6',
-    },
-    {
-      name: 'Eclair',
-      calories: 262,
-      fat: 16,
-      carbs: 23,
-      protein: 6,
-      iron: '7',
-    },
-    {
-      name: 'Gingerbread',
-      calories: 356,
-      fat: 16,
-      carbs: 49,
-      protein: 3.9,
-      iron: '16',
-    },
-    {
-      name: 'Ice cream sandwich',
-      calories: 237,
-      fat: 9,
-      carbs: 37,
-      protein: 4.3,
-      iron: '1',
-    },
-    {
-      name: 'Lollipop',
-      calories: 392,
-      fat: 0.2,
-      carbs: 98,
-      protein: 0,
-      iron: '2',
-    },
-    {
-      name: 'Cupcake',
-      calories: 305,
-      fat: 3.7,
-      carbs: 67,
-      protein: 4.3,
-      iron: '8',
-    },
-    {
-      name: 'Honeycomb',
-      calories: 408,
-      fat: 3.2,
-      carbs: 87,
-      protein: 6.5,
-      iron: '45',
-    },
-    {
-      name: 'Donut',
-      calories: 452,
-      fat: 25,
-      carbs: 51,
-      protein: 4.9,
-      iron: '22',
-    },
-  ]
+import axiosInst from '@/services/api.js'
+const dialog = ref(false)
+function openDialog(item) {
+  dialog.value = true
+  if(item){
+      form.value.productName= item.productName
+      form.value.productPrice= item.productPrice
+      form.value.ProductNumber=item.ProductNumber
+      form.value.productStatus=item.productStatus
+      form.value.productCategory=item.productCategory
+      form.value.ProductSku=item.ProductSku
+      form.value.productImage=item.productImage // Assuming this is a file object
+    }
+     else {
+    form.value = {
+      productName: '',
+      productPrice: '',
+      ProductNumber: '',
+      productStatus: '',
+      productCategory: '',
+      ProductSku: '',
+      productImage: null,
+    }
+  }
+} 
+ 
   const FakeAPI = {
     async fetch ({ page, itemsPerPage, sortBy }) {
       return new Promise(resolve => {
@@ -234,13 +337,15 @@ import HeaderComponent from '@/components/HeaderComponent.vue'
       })
     },
   }
-  const itemsPerPage = ref(5)
+  const itemsPerPage = ref(10)
   const headers = ref([
-   
-    { title: 'Product name', key: 'calories', align: 'start' },
-    { title: 'Purchase Unit Price', key: 'fat', align: 'start' },
-    { title: 'Products', key: 'carbs', align: 'start' },
-    { title: 'Status', key: 'protein', align: 'start' },
+     {title:'product Image', key:'productImage', align:'start'},
+    { title: 'Product name', key: 'productName', align: 'start' },
+     {title: 'SKU', key: 'ProductSku', align: 'start' },
+    { title: 'Purchase Unit Price', key: 'productPrice', align: 'start' },
+    { title: 'Number of Products', key: 'ProductNumber', align: 'start' },
+    { title: 'Category', key: 'productCategory', align: 'start' },
+    { title: 'Status', key: 'productStatus', align: 'start' },
     { title: 'actions',key:'actions', align: 'start' },
   ])
   const search = ref('')
@@ -249,10 +354,85 @@ import HeaderComponent from '@/components/HeaderComponent.vue'
   const totalItems = ref(0)
   function loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
-    FakeAPI.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-      serverItems.value = items
-      totalItems.value = total
+      axiosInst.get('/api/products/', {
+      params: {
+        page: 1, 
+        itemsPerPage: itemsPerPage,
+       
+      },
+    }).then(response => {
+      serverItems.value =response.data.results || response.data
+      totalItems.value = response.data.count || response.data.length
+      loading.value = false
+    }).catch(error => {
+      console.error('Error fetching products:', error);
       loading.value = false
     })
   }
+  let form = ref({
+    productName: '',
+    productPrice: '',
+    ProductNumber: '',
+    productStatus: '',
+    productCategory: '',
+    ProductSku: '',
+    productImage: null,
+  })
+  function submitproducts(){
+ const formdata = new FormData();
+ formdata.append('productName', form.value.productName);
+ formdata.append('productPrice', form.value.productPrice);
+  formdata.append('ProductSku', form.value.ProductSku);
+ formdata.append('ProductNumber', form.value.ProductNumber);
+  formdata.append('productCategory', form.value.productCategory);
+ formdata.append('productStatus', form.value.productStatus);
+ formdata.append('productImage', form.value.productImage);
+ // Here you can send formdata to your API
+ axiosInst.post('/api/products/', formdata, {
+   headers: {
+     'Content-Type': 'multipart/form-data'
+   }
+ }).then(response => {
+   console.log('Product submitted successfully:', response.data); 
+    dialog.value = false; // Close the dialog after submission
+  }).catch(error => {
+    console.error('Error submitting product:', error);
+  });
+ 
+  }
+  const BASE_URL = 'http://localhost:8000';
+function getImageUrl(path) {
+  if (!path) return '';
+  // If path is already absolute, return as is
+  if (path.startsWith('http')) return path;
+  return BASE_URL + path;
+}
+  const fetchedcategories = ref([]);
+  function fetchcategories() {
+    axiosInst.get('/api/categories/')
+      .then(response => {
+        // Handle the response data
+        console.log('Categories fetched successfully:', response.data);
+         fetchedcategories.value = response.data;
+      })
+      .catch(error => {
+        console.error('Error fetching categories:', error);
+      });
+  }
+  onMounted(() => {
+    fetchcategories();
+    
+  });
+  function deleteproduct(id) {
+    axiosInst.delete(`/api/productdetail/${id}/`)
+      .then(response => {
+        console.log('Product deleted successfully:', response.data);
+        loadItems({ page: 1, itemsPerPage: itemsPerPage.value, sortBy: [] }); // Refresh the product list
+        // Optionally, refresh the product list or handle UI updates
+      })
+      .catch(error => {
+        console.error('Error deleting product:', error);
+      });
+  }
+  
 </script>

@@ -8,8 +8,9 @@ class Product(models.Model):
     productImage = models.ImageField(upload_to='products/')
     productName = models.CharField(max_length=100)
     ProductSku = models.CharField(max_length=50, unique=True)
+    ProductNumber = models.IntegerField(default=0,null=True, blank=True)
     productPrice = models.DecimalField(max_digits=10, decimal_places=2)
     productCategory = models.ForeignKey(Category, on_delete=models.CASCADE)
-    productStatus = models.BooleanField(default=True)
+    productStatus = models.TextField(max_length=10)
 
 # Create your models here.
