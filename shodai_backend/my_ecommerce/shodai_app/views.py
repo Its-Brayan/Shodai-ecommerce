@@ -56,7 +56,7 @@ def create_product(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
         page = int(request.GET.get('page'))
-        page_size = int(request.GET.get('itemsPerPage'))
+        page_size = int(request.GET.get('itemsPerPage',10))
         search_query = request.GET.get('search','')
         products = Product.objects.all()
         if search_query:

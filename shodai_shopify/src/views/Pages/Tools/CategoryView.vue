@@ -324,7 +324,7 @@ axiosInst.post(`api/categories/`,formdata,{
     axiosInst.get(`api/categories/`, {
         params: {
           page:page,
-          itemsPerPage:itemsPerPage,
+          itemsPerPage:itemsPerPage.value,
           search:search.value
        
         },
