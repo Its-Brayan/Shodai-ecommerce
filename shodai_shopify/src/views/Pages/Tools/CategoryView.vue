@@ -273,10 +273,13 @@ axiosInst.post(`api/categories/`,formdata,{
   toast.success('Category created successfully!');
   console.log('Category created successfully:', response.data);
   dialog.value = false; // Close the dialog after successful submission
+   loadItems({page:1,itemsPerPage:itemsPerPage})
 })
 .catch(error => {
   console.error('Error creating category:', error);
+
     toast.error('Failed to create category. Please try again.');
+
 }); 
   }else{
       axiosInst.put(`api/categorydetail/${categoryid.value}/`,formdata,{
@@ -287,7 +290,10 @@ axiosInst.post(`api/categories/`,formdata,{
       .then(response => {
         toast.success('Category updated successfully!');
         console.log('Category updated successfully:', response.data);
-        dialog.value = false; // Close the dialog after successful submission
+        
+        dialog.value = false; 
+        // Close the dialog after successful submission
+        loadItems({page:1,itemsPerPage:itemsPerPage})
       })
       .catch(error => {
         console.error('Error updating category:', error);     
@@ -316,9 +322,9 @@ axiosInst.post(`api/categories/`,formdata,{
     loading.value = true
     axiosInst.get(`api/categories/`, {
         params: {
-          page,
-          itemsPerPage,
-          sortBy: sortBy.length ? sortBy[0].key : undefined,
+          page:1,
+          itemsPerPage:itemsPerPage,
+       
         },
       })
       .then(response => {

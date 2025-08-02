@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import *
+from django.core.paginator import Paginator
 from .serializers import *
 
 @api_view(['GET', 'POST'])
@@ -16,6 +17,7 @@ def create_category(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
         categories = Category.objects.all()
+      
         serializer = CategorySerializer(categories, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
