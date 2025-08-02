@@ -186,8 +186,8 @@
      
           <v-btn
           
-            text="Submit"
-             class="bg-indigo text-white"
+            :text="isediting ? 'update product' : 'submit product'  "
+             class="bg-indigo text-white text-capitalize"
             variant="tonal"
             @click="submitproducts"
           ></v-btn>
@@ -246,6 +246,7 @@
             </v-card-text>
          </v-card>
           <v-card>
+           
             <v-card-text>
                 <v-data-table-server
     v-model:items-per-page="itemsPerPage"
@@ -268,6 +269,10 @@
     >
       {{ item.productStatus }}
     </v-chip>
+    
+  </template>
+  <template v-slot:item.productPrice="{item}">
+    ksh {{item.productPrice}}
   </template>
   <template v-slot:item.productImage="{ item }">
     <v-img
@@ -283,6 +288,7 @@
 
         </v-card-text>
     </v-card>
+    
 </template>
 
 <script setup>
@@ -292,17 +298,20 @@ import HeaderComponent from '@/components/HeaderComponent.vue'
 import axiosInst from '@/services/api.js'
 const dialog = ref(false)
 function openDialog(item) {
-  dialog.value = true
+ dialog.value=true
   if(item){
-      form.value.productName= item.productName
-      form.value.productPrice= item.productPrice
-      form.value.ProductNumber=item.ProductNumber
-      form.value.productStatus=item.productStatus
-      form.value.productCategory=item.productCategory
-      form.value.ProductSku=item.ProductSku
-      form.value.productImage=item.productImage // Assuming this is a file object
+      isediting.value = true
+      productid.value = item.id
+    
+      form.value.productName = item.productName
+      form.value.productPrice = item.productPrice
+      form.value.ProductNumber = item.ProductNumber
+      form.value.productStatus = item.productStatus
+      form.value.ProductSku = item.ProductSku
+      form.value.productCategory = item.productCategory  
     }
      else {
+      isediting.value = false
     form.value = {
       productName: '',
       productPrice: '',
@@ -312,7 +321,9 @@ function openDialog(item) {
       ProductSku: '',
       productImage: null,
     }
+
   }
+   
 } 
  
   const FakeAPI = {
@@ -378,6 +389,8 @@ function openDialog(item) {
     ProductSku: '',
     productImage: null,
   })
+  const isediting = ref(false)
+  const productid = ref(null)
   function submitproducts(){
  const formdata = new FormData();
  formdata.append('productName', form.value.productName);
@@ -388,6 +401,7 @@ function openDialog(item) {
  formdata.append('productStatus', form.value.productStatus);
  formdata.append('productImage', form.value.productImage);
  // Here you can send formdata to your API
+if(!isediting){
  axiosInst.post('/api/products/', formdata, {
    headers: {
      'Content-Type': 'multipart/form-data'
@@ -395,9 +409,29 @@ function openDialog(item) {
  }).then(response => {
    console.log('Product submitted successfully:', response.data); 
     dialog.value = false; // Close the dialog after submission
+    loadItems({page:1, itemsPerPage:itemsPerPage});
   }).catch(error => {
     console.error('Error submitting product:', error);
   });
+}
+else{
+  axiosInst.put(`api/productdetail/${productid.value}/`, formdata,{
+    headers:{
+      'Content-Type':'multipart/form-data'
+    }
+  }).then(response =>{
+    console.log("product edit successfully",response.data)
+     dialog.value=false
+        loadItems({page:1, itemsPerPage:itemsPerPage});
+
+  }
+
+  ).catch(error =>{
+    console.error("Failed to edit product:",error);
+  }
+
+  )
+}
  
   }
   const BASE_URL = 'http://localhost:8000';
@@ -421,6 +455,7 @@ function getImageUrl(path) {
   }
   onMounted(() => {
     fetchcategories();
+    loadItems({page:1, itemsPerPage:itemsPerPage} )
     
   });
   function deleteproduct(id) {
