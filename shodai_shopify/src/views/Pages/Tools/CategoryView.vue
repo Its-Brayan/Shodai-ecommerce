@@ -137,6 +137,7 @@
                         variant="outlined"
                         prepend-inner-icon="mdi-magnify"
                         width="300px"
+                        v-model="search"
                         label="Search Categories"
                         density="compact"
                         color="grey-darken-2"
@@ -182,7 +183,7 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
   import HeaderComponent from '@/components/HeaderComponent.vue'
     import { toast } from 'vue-sonner';
 import axiosInst from '@/services/api.js'
@@ -273,7 +274,7 @@ axiosInst.post(`api/categories/`,formdata,{
   toast.success('Category created successfully!');
   console.log('Category created successfully:', response.data);
   dialog.value = false; // Close the dialog after successful submission
-   loadItems({page:1,itemsPerPage:itemsPerPage})
+   loadItems({page:1,itemsPerPage:itemsPerPage.value})
 })
 .catch(error => {
   console.error('Error creating category:', error);
@@ -293,7 +294,7 @@ axiosInst.post(`api/categories/`,formdata,{
         
         dialog.value = false; 
         // Close the dialog after successful submission
-        loadItems({page:1,itemsPerPage:itemsPerPage})
+        loadItems({page:1,itemsPerPage:itemsPerPage.value})
       })
       .catch(error => {
         console.error('Error updating category:', error);     
@@ -322,8 +323,9 @@ axiosInst.post(`api/categories/`,formdata,{
     loading.value = true
     axiosInst.get(`api/categories/`, {
         params: {
-          page:1,
+          page:page,
           itemsPerPage:itemsPerPage,
+          search:search.value
        
         },
       })
@@ -351,6 +353,10 @@ axiosInst.post(`api/categories/`,formdata,{
   }
 
  }
- 
+ watch(search, ()=>{
+  loadItems({page:1,itemsPerPage:itemsPerPage})
+ }
+
+ )
  
 </script>

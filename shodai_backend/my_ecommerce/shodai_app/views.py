@@ -16,9 +16,15 @@ def create_category(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
+        page = int(request.GET.get('page',1))
+        page_size =int(request.GET.get('itemsPerPage',10))
+        search_query = request.GET.get('search', '')
         categories = Category.objects.all()
-      
-        serializer = CategorySerializer(categories, many=True)
+        if search_query:
+            categories = categories.filter(categoryName__icontains=search_query)
+        paginator = Paginator(categories, page_size)  
+        page_obj = paginator.get_page(page) 
+        serializer = CategorySerializer(page_obj.object_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 @api_view(['GET','PUT', 'DELETE'])    
@@ -49,8 +55,15 @@ def create_product(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
+        page = int(request.GET.get('page'))
+        page_size = int(request.GET.get('itemsPerPage'))
+        search_query = request.GET.get('search','')
         products = Product.objects.all()
-        serializer = ProductSerializer(products, many=True)
+        if search_query:
+            products = products.filter(productName__icontains=search_query)
+        paginator = Paginator(products,page_size)
+        page_obj = paginator.get_page(page)
+        serializer = ProductSerializer(page_obj.object_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 @api_view(['PUT', 'DELETE'])
 def productDetail(request, id):

@@ -14,6 +14,7 @@
                       
                         label="Search Products"
                         density="compact"
+                        v-model="search"
                         color="grey-darken-2"
                         class="text-grey-darken-2"></v-text-field>
                         
@@ -293,7 +294,7 @@
 
 <script setup>
 
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, watch } from 'vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import axiosInst from '@/services/api.js'
 const dialog = ref(false)
@@ -367,8 +368,9 @@ function openDialog(item) {
     loading.value = true
       axiosInst.get('/api/products/', {
       params: {
-        page: 1, 
-        itemsPerPage: itemsPerPage,
+        page: page, 
+        itemsPerPage: itemsPerPage.value,
+        search:search.value
        
       },
     }).then(response => {
@@ -401,7 +403,7 @@ function openDialog(item) {
  formdata.append('productStatus', form.value.productStatus);
  formdata.append('productImage', form.value.productImage);
  // Here you can send formdata to your API
-if(!isediting){
+if(isediting){
  axiosInst.post('/api/products/', formdata, {
    headers: {
      'Content-Type': 'multipart/form-data'
@@ -469,5 +471,10 @@ function getImageUrl(path) {
         console.error('Error deleting product:', error);
       });
   }
+  watch(search,()=>{
+    loadItems({page:1,itemsPerPage:itemsPerPage})
+  }
+
+  )
   
 </script>
