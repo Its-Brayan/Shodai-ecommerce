@@ -289,7 +289,7 @@
 
         </v-card-text>
     </v-card>
-    
+  
 </template>
 
 <script setup>
@@ -299,31 +299,35 @@ import HeaderComponent from '@/components/HeaderComponent.vue'
 import axiosInst from '@/services/api.js'
 const dialog = ref(false)
 function openDialog(item) {
- dialog.value=true
+  dialog.value=true
   if(item){
       isediting.value = true
-      productid.value = item.id
-    
+       productid.value = item.id
       form.value.productName = item.productName
       form.value.productPrice = item.productPrice
       form.value.ProductNumber = item.ProductNumber
       form.value.productStatus = item.productStatus
       form.value.ProductSku = item.ProductSku
       form.value.productCategory = item.productCategory  
+      form.value.productImage = null
+      
     }
-     else {
+    else {
+        dialog.value=true
       isediting.value = false
-    form.value = {
-      productName: '',
-      productPrice: '',
-      ProductNumber: '',
-      productStatus: '',
-      productCategory: '',
-      ProductSku: '',
-      productImage: null,
-    }
+    form.value.productName = ''
+     form.value.productName= ''
+      form.value.productPrice=''
+      form.value.ProductNumber=''
+     form.value.productStatus=''
+    form.value.productCategory= ''
+     form.value.ProductSku=''
+     form.value.productImage= null
+     }
+    
 
-  }
+  
+ 
    
 } 
 
@@ -348,12 +352,12 @@ function openDialog(item) {
       axiosInst.get('/api/products/', {
       params: {
         page: page, 
-        itemsPerPage: itemsPerPage.value,
+        itemsPerPage: itemsPerPage,
         search:search.value
        
       },
     }).then(response => {
-      serverItems.value =response.data.results
+      serverItems.value =Array.isArray(response.data.results) ? response.data.results : [];
       totalItems.value = response.data.count  
       loading.value = false
     }).catch(error => {
