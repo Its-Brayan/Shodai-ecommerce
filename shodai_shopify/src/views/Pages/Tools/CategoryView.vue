@@ -330,8 +330,8 @@ axiosInst.post(`api/categories/`,formdata,{
         },
       })
       .then(response => {
-        serverItems.value = response.data.results || response.data;
-        totalItems.value = response.data.total;
+        serverItems.value = response.data.results;
+        totalItems.value = response.data.count;
         loading.value = false;
       })
       .catch(error => {
@@ -345,7 +345,7 @@ axiosInst.post(`api/categories/`,formdata,{
   axiosInst.delete(`api/categorydetail/${item}/`)
   
     toast.success('Category deleted successfully!');
-    loadItems({ page: 1, itemsPerPage: 10, sortBy: [] });
+    loadItems({ page: 1, itemsPerPage: 5, sortBy: [] });
   }catch (error) {
 
     console.error('Error deleting category:', error);

@@ -326,37 +326,16 @@ function openDialog(item) {
   }
    
 } 
- 
-  const FakeAPI = {
-    async fetch ({ page, itemsPerPage, sortBy }) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          const start = (page - 1) * itemsPerPage
-          const end = start + itemsPerPage
-          const items = desserts.slice()
-          if (sortBy.length) {
-            const sortKey = sortBy[0].key
-            const sortOrder = sortBy[0].order
-            items.sort((a, b) => {
-              const aValue = a[sortKey]
-              const bValue = b[sortKey]
-              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-            })
-          }
-          const paginated = items.slice(start, end === -1 ? undefined : end)
-          resolve({ items: paginated, total: items.length })
-        }, 500)
-      })
-    },
-  }
-  const itemsPerPage = ref(10)
+
+     
+  const itemsPerPage = ref(5)
   const headers = ref([
      {title:'product Image', key:'productImage', align:'start'},
     { title: 'Product name', key: 'productName', align: 'start' },
      {title: 'SKU', key: 'ProductSku', align: 'start' },
     { title: 'Purchase Unit Price', key: 'productPrice', align: 'start' },
     { title: 'Number of Products', key: 'ProductNumber', align: 'start' },
-    { title: 'Category', key: 'productCategory', align: 'start' },
+    { title: 'Category', key: 'categoryName', align: 'start' },
     { title: 'Status', key: 'productStatus', align: 'start' },
     { title: 'actions',key:'actions', align: 'start' },
   ])
@@ -374,8 +353,8 @@ function openDialog(item) {
        
       },
     }).then(response => {
-      serverItems.value =response.data.results || response.data
-      totalItems.value = response.data.count || response.data.length
+      serverItems.value =response.data.results
+      totalItems.value = response.data.count  
       loading.value = false
     }).catch(error => {
       console.error('Error fetching products:', error);
@@ -411,7 +390,7 @@ if(isediting){
  }).then(response => {
    console.log('Product submitted successfully:', response.data); 
     dialog.value = false; // Close the dialog after submission
-    loadItems({page:1, itemsPerPage:itemsPerPage});
+    loadItems({page:1, itemsPerPage:itemsPerPage.value});
   }).catch(error => {
     console.error('Error submitting product:', error);
   });
@@ -424,7 +403,7 @@ else{
   }).then(response =>{
     console.log("product edit successfully",response.data)
      dialog.value=false
-        loadItems({page:1, itemsPerPage:itemsPerPage});
+        loadItems({page:1, itemsPerPage:itemsPerPage.value});
 
   }
 
@@ -457,7 +436,7 @@ function getImageUrl(path) {
   }
   onMounted(() => {
     fetchcategories();
-    loadItems({page:1, itemsPerPage:itemsPerPage} )
+    loadItems({page:1, itemsPerPage:itemsPerPage.value} )
     
   });
   function deleteproduct(id) {
@@ -472,7 +451,7 @@ function getImageUrl(path) {
       });
   }
   watch(search,()=>{
-    loadItems({page:1,itemsPerPage:itemsPerPage})
+    loadItems({page:1,itemsPerPage:itemsPerPage.value})
   }
 
   )

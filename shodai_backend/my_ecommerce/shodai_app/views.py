@@ -17,7 +17,7 @@ def create_category(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
         page = int(request.GET.get('page',1))
-        page_size =int(request.GET.get('itemsPerPage',10))
+        page_size =int(request.GET.get('itemsPerPage',5))
         search_query = request.GET.get('search', '')
         categories = Category.objects.all()
         if search_query:
@@ -25,7 +25,9 @@ def create_category(request):
         paginator = Paginator(categories, page_size)  
         page_obj = paginator.get_page(page) 
         serializer = CategorySerializer(page_obj.object_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'count':paginator.count,
+                         'page':page,
+                         'results':serializer.data},status=status.HTTP_200_OK)
     
 @api_view(['GET','PUT', 'DELETE'])    
 def categoryDetail(request, id):
@@ -56,7 +58,7 @@ def create_product(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
         page = int(request.GET.get('page'))
-        page_size = int(request.GET.get('itemsPerPage',10))
+        page_size = int(request.GET.get('itemsPerPage',5))
         search_query = request.GET.get('search','')
         products = Product.objects.all()
         if search_query:
@@ -64,7 +66,9 @@ def create_product(request):
         paginator = Paginator(products,page_size)
         page_obj = paginator.get_page(page)
         serializer = ProductSerializer(page_obj.object_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({'count':paginator.count,
+                         'page':page,
+                         'results':serializer.data}, status=status.HTTP_200_OK)
 @api_view(['PUT', 'DELETE'])
 def productDetail(request, id):
     product = Product.objects.get(id=id)
