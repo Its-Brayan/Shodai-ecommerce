@@ -8,14 +8,16 @@
                 <v-row>
                     <v-col cols="5">
                         <v-tabs
-                        bg-color="grey-lighten-4">
-                         <v-tab class="text-grey-darken-1 text-capitalize">All Orders</v-tab>
-                           <v-tab class="text-grey-darken-1 text-capitalize">Draft</v-tab>
-                             <v-tab  class="text-grey-darken-1 text-capitalize">Cancelled</v-tab>
-                               <v-tab  class="text-grey-darken-1 text-capitalize">Shipping</v-tab>
-                                  <v-tab  class="text-grey-darken-1 text-capitalize">Completed</v-tab>
+                        bg-color="grey-lighten-4" v-model="selectedtab">
+                         <v-tab value="" class="text-grey-darken-1 text-capitalize">All Orders
+                        </v-tab>
+                           <v-tab value="Draft" class="text-grey-darken-1 text-capitalize">Draft</v-tab>
+                             <v-tab  value="Cancelled" class="text-grey-darken-1 text-capitalize">Cancelled</v-tab>
+                               <v-tab value="Shipped" class="text-grey-darken-1 text-capitalize">Shipping</v-tab>
+                                  <v-tab value="Completed"  class="text-grey-darken-1 text-capitalize">Completed</v-tab>
                                
                         </v-tabs>
+                      
                     </v-col>
                     <v-col cols="5">
                          <v-btn 
@@ -81,7 +83,38 @@
                
                     </v-row>
             </v-card-title>
-               <v-dialog
+               
+            <v-card-text>
+                <v-data-table-server
+    v-model:items-per-page="itemsPerPage"
+    :headers="headers"
+    :items="serverItems"
+    :items-length="totalItems"
+    :loading="loading"
+    :search="search"
+    item-value="name"
+    @update:options="loadItems"
+  >
+    <template v-slot:item.actions="{item}">
+     <v-btn prepend-icon="mdi-pencil" @click="opendialog(item)" variant="outlined" size="small" class="text-capitalize bg-indigo ma-3">Edit</v-btn>
+    <v-icon size="small" @click="deleteorder(item.id)">mdi-trash-can-outline</v-icon>
+  </template>
+  <template v-slot:item.orderStatus="{item}">
+    <v-chip variant="elevated"
+     :color="item.orderStatus ==='Cancelled'? 'red' : item.orderStatus==='Completed' ? 'green'  : item.orderStatus==='Shipped' ? 'orange' : item.orderStatus ==='Draft' ? 'grey-darken-4' : '' "
+    >{{ item.orderStatus }}</v-chip>
+  </template>
+  <template v-slot:item.datePurchased="{item}">
+    {{formatdate(item.datePurchased)}}
+  </template>
+</v-data-table-server>
+            </v-card-text>
+          </v-card>
+
+        </v-card-text>
+
+    </v-card>
+    <v-dialog
       v-model="dialog"
       max-width="600"
     >
@@ -233,40 +266,11 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-            <v-card-text>
-                <v-data-table-server
-    v-model:items-per-page="itemsPerPage"
-    :headers="headers"
-    :items="serverItems"
-    :items-length="totalItems"
-    :loading="loading"
-    :search="search"
-    item-value="name"
-    @update:options="loadItems"
-  >
-    <template v-slot:item.actions="{item}">
-     <v-btn prepend-icon="mdi-pencil" @click="opendialog(item)" variant="outlined" size="small" class="text-capitalize bg-indigo ma-3">Edit</v-btn>
-    <v-icon size="small" @click="deleteorder(item.id)">mdi-trash-can-outline</v-icon>
-  </template>
-  <template v-slot:item.orderStatus="{item}">
-    <v-chip variant="elevated"
-     :color="item.orderStatus ==='Cancelled'? 'red' : item.orderStatus==='Completed' ? 'green'  : item.orderStatus==='Shipped' ? 'orange' : item.orderStatus ==='Draft' ? 'grey-darken-4' : '' "
-    >{{ item.orderStatus }}</v-chip>
-  </template>
-  <template v-slot:item.datePurchased="{item}">
-    {{formatdate(item.datePurchased)}}
-  </template>
-</v-data-table-server>
-            </v-card-text>
-          </v-card>
-
-        </v-card-text>
-    </v-card>
 </template>
 
 <script setup>
 import dayjs from 'dayjs';
-  import { onMounted, ref } from 'vue'
+  import { onMounted, ref, watch} from 'vue'
   import axiosInst from '@/services/api.js' 
   import HeaderComponent from '@/components/HeaderComponent.vue'
   const dialog = ref(false)
@@ -321,13 +325,15 @@ import dayjs from 'dayjs';
   const serverItems = ref([])
   const loading = ref(true)
   const totalItems = ref(0)
+  const selectedtab = ref("Completed")
   function loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
       axiosInst.get('api/createorder/',{
         params:{
           page:page,
           itemsPerPage:itemsPerPage,
-          search:search.value
+          search:search.value,
+          status:selectedtab.value
         }
       }
 
@@ -425,4 +431,8 @@ async  function fetchcustomeremail(){
   }
 
   )
+  watch(selectedtab, (newTab, oldTab) => {
+  console.log('Tab changed from', oldTab, 'to', newTab)
+  loadItems({ page: 1, itemsPerPage: itemsPerPage.value })
+})
 </script>
