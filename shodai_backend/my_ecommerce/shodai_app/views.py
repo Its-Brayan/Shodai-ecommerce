@@ -121,4 +121,41 @@ def updateCustomer(request, id):
     elif request.method=="DELETE":
         customer.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+@api_view(['POST','GET'])
+def createOrder(request):
+    if request.method=="POST":
+       serializer = OrdersSerializer(data=request.data)
+       if serializer.is_valid():
+           serializer.save()
+           return Response(serializer.data, status=status.HTTP_201_CREATED)
+    elif request.method=="GET":
+        page=request.GET.get('page')
+        page_size = request.GET.get('itemsPerPage')
+        search_query=request.GET.get('search')
+        orders = Orders.objects.all()
+        if search_query:
+            orders = orders.filter(OrderId__icontains =search_query)
+        paginator = Paginator(orders,page_size)
+        page_obj = paginator.get_page(page)
+
+        serializer = OrdersSerializer(page_obj.object_list, many=True)
+        return Response({
+            'count':paginator.count,
+            'page':page,
+            'results':serializer.data,
+            }, status=status.HTTP_200_OK)
+@api_view(['GET','PUT','DELETE'])
+def updateOrder(request,id):
+    order = Orders.objects.get(id=id)
+    if request.method=="GET":
+        serializer= OrdersSerializer(order)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method=="PUT":
+        serializer=OrdersSerializer(order, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    elif request.method=="DELETE":
+         order.delete()
+         return Response(status=status.HTTP_204_NO_CONTENT) 
 # Create your views here.

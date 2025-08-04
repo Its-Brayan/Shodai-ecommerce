@@ -25,5 +25,6 @@ class Orders(models.Model):
     datePurchased = models.DateTimeField()
     paymentMethod = models.CharField(max_length=50)
     amountPaid = models.FloatField(default=0,null=True,blank=True)
-    
+    orderStatus = models.CharField(max_length=100)
+
 # Create your models here.

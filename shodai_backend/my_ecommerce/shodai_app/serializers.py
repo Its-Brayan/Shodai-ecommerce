@@ -14,3 +14,8 @@ class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customers
         fields = '__all__'
+class OrdersSerializer(serializers.ModelSerializer):
+    customeremail = serializers.CharField(source='CustomerName.customerEmail', read_only=True)
+    class Meta:
+        model = Orders
+        fields = '__all__'

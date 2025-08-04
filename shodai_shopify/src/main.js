@@ -1,5 +1,6 @@
 
  import '@mdi/font/css/materialdesignicons.css';
+import { VDateInput } from 'vuetify/labs/VDateInput'
  import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -17,7 +18,9 @@ const vuetify = createVuetify({
   components:{
     ...components,
     VFileUpload, // Registering the VFileUpload component
+    VDateInput,
   },
+ 
   directives,
 })
 
