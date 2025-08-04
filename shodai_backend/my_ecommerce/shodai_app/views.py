@@ -93,8 +93,8 @@ def createCustomer(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method=="GET":
         page = request.GET.get('page')
-        page_size = request.GET.get('itemsPerPage')
-        search_query = request.GET.get('search')
+        page_size = request.GET.get('itemsPerPage',5)
+        search_query = request.GET.get('search','')
     
         customer = Customers.objects.all()
         if search_query:
@@ -102,7 +102,10 @@ def createCustomer(request):
         paginator = Paginator(customer, page_size)
         page_obj = paginator.get_page(page)
         serializer = CustomerSerializer(page_obj.object_list, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({
+            'count':paginator.count,
+            'page':page,
+            'results':serializer.data}, status=status.HTTP_200_OK)
 @api_view(['GET','PUT','DELETE'])
 def updateCustomer(request, id):
     customer = Customers.objects.get(id=id)

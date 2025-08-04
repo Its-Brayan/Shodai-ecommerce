@@ -274,7 +274,7 @@
       }
      }
      ).then(response =>{
-      serverItems.value = response.data
+      serverItems.value = response.data.results
       totalItems.value = response.data.count 
       loading.value = false
      }
