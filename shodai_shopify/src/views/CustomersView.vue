@@ -33,9 +33,9 @@
                     </v-col>
                     <v-col cols="2">
                     <v-btn 
-                    prepend-icon="mdi-plus"
+                 
                   
-                   
+                   @click="openDialog"
                     variant="outlined"
                     width="200px"
                      size="large"
@@ -79,6 +79,121 @@
 
                     </v-row>
             </v-card-title>
+              <v-dialog
+      v-model="dialog"
+      max-width="600"
+    >
+     
+      <v-card>
+        <v-card-title>
+          <span><v-icon>mdi-account-outline</v-icon></span>
+          <span> Customer</span>
+        <span class="float-right"><v-icon @click="dialog=false">mdi-close-circle</v-icon></span>
+        </v-card-title>
+        <v-card-text>
+          <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Customer Name*"
+                required
+                v-model="form.customerName"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-text-field>
+            </v-col>
+            </v-row>
+              <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Customer Email*"
+                required
+                v-model="form.customerEmail"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-text-field>
+            </v-col>
+            </v-row>
+             <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-select
+                label="Customer Location*"
+                required
+                :items="['Europe', 'Asia']"
+                v-model="form.customerLocation"
+                item-title="categoryName"
+                item-value="id"
+              
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-select>
+            </v-col>
+            </v-row>
+             <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Number of orders*"
+                required
+                v-model="form.customerOrders"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-text-field>
+            </v-col>
+            </v-row>
+             <v-row dense>
+            <v-col
+              cols="12"
+              md="11"
+              sm="10"
+            >
+              <v-text-field
+                label="Total Paid*"
+                required
+                v-model="form.cashSpent"
+                variant="outlined"
+                color="grey-darken-2"
+                density="compact"
+              ></v-text-field>
+            </v-col>
+            </v-row>
+          
+        </v-card-text>
+
+      
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+     
+          <v-btn
+          
+            :text="isediting ? 'update customer' : 'create customer'  "
+             class="bg-indigo text-white text-capitalize"
+            variant="tonal"
+            @click="submitcustomer"
+          ></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
             <v-card-text>
                 <v-data-table-server
     v-model:items-per-page="itemsPerPage"
@@ -90,6 +205,10 @@
     item-value="name"
     @update:options="loadItems"
   >
+  <template v-slot:item.actions="{item}">
+     <v-btn prepend-icon="mdi-pencil" @click="openDialog(item)" variant="outlined" size="small" class="text-capitalize bg-indigo ma-3">Edit</v-btn>
+    <v-icon size="small" @click="deletecustomer(item.id)">mdi-trash-can-outline</v-icon>
+  </template>
   
 </v-data-table-server>
             </v-card-text>
@@ -102,88 +221,33 @@
 <script setup>
   import { ref } from 'vue'
   import HeaderComponent from '@/components/HeaderComponent.vue'
-  const desserts = [
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-      fat: 6,
-      carbs: 24,
-      protein: 4,
-      iron: '1',
-    },
-    {
-      name: 'Jelly bean',
-      calories: 375,
-      fat: 0,
-      carbs: 94,
-      protein: 0,
-      iron: '0',
-    },
-    {
-      name: 'KitKat',
-      calories: 518,
-      fat: 26,
-      carbs: 65,
-      protein: 7,
-      iron: '6',
-    },
-    {
-      name: 'Eclair',
-      calories: 262,
-      fat: 16,
-      carbs: 23,
-      protein: 6,
-      iron: '7',
-    },
-    {
-      name: 'Gingerbread',
-      calories: 356,
-      fat: 16,
-      carbs: 49,
-      protein: 3.9,
-      iron: '16',
-    },
-    {
-      name: 'Ice cream sandwich',
-      calories: 237,
-      fat: 9,
-      carbs: 37,
-      protein: 4.3,
-      iron: '1',
-    },
-    {
-      name: 'Lollipop',
-      calories: 392,
-      fat: 0.2,
-      carbs: 98,
-      protein: 0,
-      iron: '2',
-    },
-    {
-      name: 'Cupcake',
-      calories: 305,
-      fat: 3.7,
-      carbs: 67,
-      protein: 4.3,
-      iron: '8',
-    },
-    {
-      name: 'Honeycomb',
-      calories: 408,
-      fat: 3.2,
-      carbs: 87,
-      protein: 6.5,
-      iron: '45',
-    },
-    {
-      name: 'Donut',
-      calories: 452,
-      fat: 25,
-      carbs: 51,
-      protein: 4.9,
-      iron: '22',
-    },
-  ]
+  import axiosInst from '@/services/api.js' 
+  const dialog = ref(false)
+  const isediting = ref(false)
+  const customerid = ref(null)
+  function openDialog(item){
+    dialog.value = true
+    if(item){
+       isediting.value = true
+       customerid.value = item.id
+      form.value.customerName = item.customerName
+      form.value.customerEmail = item.customerEmail
+      form.value.customerLocation = item.customerLocation
+      form.value.customerOrders = item.customerOrders
+      form.value.cashSpent = item.cashSpent
+
+    }
+    else{
+      isediting.value = false
+      form.value = {
+        customerName : '',
+        customerEmail : '',
+        customerLocation:'',
+        customerOrders: '',
+        cashSpent:''
+      }
+    }
+  }
   const FakeAPI = {
     async fetch ({ page, itemsPerPage, sortBy }) {
       return new Promise(resolve => {
@@ -208,29 +272,87 @@
   }
   const itemsPerPage = ref(5)
   const headers = ref([
-    {
-      title: 'Dessert (100g serving)',
-      align: 'start',
-      sortable: false,
-      key: 'name',
-    },
-    { title: 'Customer', key: 'calories', align: 'end' },
-    { title: 'Email', key: 'fat', align: 'end' },
-    { title: 'Location', key: 'carbs', align: 'end' },
-    { title: 'Orders', key: 'protein', align: 'end' },
-    { title: 'Spent',key:'actions', align: 'end' },
-     { title: 'Action',key:'actions', align: 'end' },
+   
+    { title: 'Customer Name', key: 'customerName', align: 'start' },
+    { title: 'Email', key: 'customerEmail', align: 'start' },
+    { title: 'Location', key: 'customerLocation', align:'start' },
+    { title: 'Orders', key: 'customerOrders', align: 'start' },
+    { title: 'Spent',key:'cashSpent', align: 'start' },
+     { title: 'Action',key:'actions', align: 'start' },
     ])
   const search = ref('')
   const serverItems = ref([])
   const loading = ref(true)
   const totalItems = ref(0)
-  function loadItems ({ page, itemsPerPage, sortBy }) {
+  async function  loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
-    FakeAPI.fetch({ page, itemsPerPage, sortBy }).then(({ items, total }) => {
-      serverItems.value = items
-      totalItems.value = total
+     await  axiosInst.get(`api/createcustomer/`,{
+      params:{
+      page:page,
+      itemsPerPage:itemsPerPage,
+      search:search.value
+      }
+     }
+     ).then(response =>{
+      serverItems.value = response.data
+      totalItems.value = response.data.count 
       loading.value = false
-    })
+     }
+     ).catch(error =>{
+      console.error("Error fetching data", error)
+      loading.value = false
+     }
+
+     )
+
+    
+  }
+let form = ref({
+  customerName:'',
+  customerEmail:'',
+  customerLocation:'',
+  customerOrders:'',
+  cashSpent:''
+})
+  function submitcustomer(){
+    const formdata = {
+      ...form.value
+    }
+    if(isediting.value==false){
+  axiosInst.post(`api/createcustomer/`,formdata)
+  .then(response =>{
+    console.log(response.data)
+  }
+
+  ).catch( error =>{
+    console.error(error)
+  }
+     
+  )
+}
+else{
+  axiosInst.put(`api/updatecustomer/${customerid.value}/`, formdata)
+  .then(response =>{
+    console.log(response.data)
+  }
+
+  ).catch(error=>{
+    console.error(error)
+  }
+
+  )
+}
+  }
+  function deletecustomer(id){
+    axiosInst.delete(`api/updatecustomer/${id}/`)
+    .then(response =>{
+      console.log('Customer deleted successfully', response.data)
+    }
+
+    ).catch(error =>{
+      console.error("Error deleting customer", error)
+    }
+
+    )
   }
 </script>

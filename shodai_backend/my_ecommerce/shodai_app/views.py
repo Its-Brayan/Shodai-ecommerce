@@ -82,4 +82,32 @@ def productDetail(request, id):
     elif request.method == 'DELETE':
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+@api_view(['POST','GET'])
+def createCustomer(request):
+    if request.method=="POST":
+        data = request.data
+        serializer = CustomerSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method=="GET":
+        customer = Customers.objects.all()
+        serializer = CustomerSerializer(customer, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+@api_view(['GET','PUT','DELETE'])
+def updateCustomer(request, id):
+    customer = Customers.objects.get(id=id)
+    if request.method=='GET':
+        serializer = CustomerSerializer(customer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method =="PUT":
+        serializer = CustomerSerializer(customer, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method=="DELETE":
+        customer.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 # Create your views here.

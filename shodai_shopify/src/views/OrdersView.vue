@@ -210,7 +210,7 @@
   const itemsPerPage = ref(5)
   const headers = ref([
     {
-      title: 'Dessert (100g serving)',
+      title: 'Order ID',
       align: 'start',
       sortable: false,
       key: 'name',
