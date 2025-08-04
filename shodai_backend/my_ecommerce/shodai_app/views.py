@@ -60,9 +60,13 @@ def create_product(request):
         page = int(request.GET.get('page'))
         page_size = int(request.GET.get('itemsPerPage',5))
         search_query = request.GET.get('search','')
+        specific_product=request.GET.get('sproduct','')
         products = Product.objects.all()
+        if specific_product:
+            products = products.filter(productName__iexact=specific_product)
         if search_query:
             products = products.filter(productName__icontains=search_query)
+        
         paginator = Paginator(products,page_size)
         page_obj = paginator.get_page(page)
         serializer = ProductSerializer(page_obj.object_list, many=True)

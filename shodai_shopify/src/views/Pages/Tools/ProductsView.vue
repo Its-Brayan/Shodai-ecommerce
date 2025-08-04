@@ -20,11 +20,14 @@
                         
                     </v-col>
                     <v-col cols="2">
-                        <v-select 
+                        <v-autocomplete
+                        :items="allproducts"
+                        v-model="specificproduct"
+                        item-title="productName"
                         label="all products"
                         density="compact"
                         width="200px"
-                        variant="outlined"></v-select>
+                        variant="outlined"></v-autocomplete>
                     </v-col>
                      <v-col cols="2">
                         <v-select 
@@ -297,6 +300,7 @@
   import { onMounted, ref, watch } from 'vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import axiosInst from '@/services/api.js'
+import { all } from 'axios'
 const dialog = ref(false)
 function openDialog(item=null) {
  
@@ -348,16 +352,20 @@ function openDialog(item=null) {
   const serverItems = ref([])
   const loading = ref(true)
   const totalItems = ref(0)
+  const allproducts= ref([])
+  const specificproduct=ref('')
   function loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
       axiosInst.get('/api/products/', {
       params: {
         page: page, 
         itemsPerPage: itemsPerPage,
-        search:search.value
+        search:search.value,
+        sproduct:specificproduct.value
        
       },
     }).then(response => {
+      allproducts.value=response.data.results
       serverItems.value =Array.isArray(response.data.results) ? response.data.results : [];
       totalItems.value = response.data.count  
       loading.value = false
@@ -456,5 +464,9 @@ function getImageUrl(path) {
       });
   }
   
-  
+  watch(specificproduct =>{
+       loadItems({ page: 1, itemsPerPage: itemsPerPage.value}); 
+  }
+
+  )
 </script>
