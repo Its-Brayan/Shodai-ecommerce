@@ -250,8 +250,11 @@
   </template>
   <template v-slot:item.orderStatus="{item}">
     <v-chip variant="elevated"
-    
+     :color="item.orderStatus ==='Cancelled'? 'red' : item.orderStatus==='Completed' ? 'green'  : item.orderStatus==='Shipped' ? 'orange' : item.orderStatus ==='Draft' ? 'grey-darken-4' : '' "
     >{{ item.orderStatus }}</v-chip>
+  </template>
+  <template v-slot:item.datePurchased="{item}">
+    {{formatdate(item.datePurchased)}}
   </template>
 </v-data-table-server>
             </v-card-text>
@@ -262,6 +265,7 @@
 </template>
 
 <script setup>
+import dayjs from 'dayjs';
   import { onMounted, ref } from 'vue'
   import axiosInst from '@/services/api.js' 
   import HeaderComponent from '@/components/HeaderComponent.vue'
@@ -305,9 +309,9 @@
       sortable: false,
       key: 'OrderId',
     },
-    { title: 'Order', key: 'OrderNumber', align: 'start' },
+    { title: 'Number of Products', key: 'OrderNumber', align: 'start' },
     { title: 'Customer', key: 'customeremail', align: 'start' },
-    { title: 'Date', key: 'datePurchased', align: 'start' },
+    { title: 'Date purchased', key: 'datePurchased', align: 'start' },
     { title: 'Payment', key: 'paymentMethod', align: 'start' },
     { title: 'Price',key:'amountPaid', align: 'end' },
      { title: 'Order Status',key:'orderStatus', align: 'end' },
@@ -341,6 +345,9 @@
 
   )
    
+  }
+  function formatdate(datestr){
+    return dayjs(datestr).format('YYYY-MM-DD');
   }
   const customerdetails = ref({})
   let form = ref({
