@@ -62,7 +62,10 @@ def create_product(request):
         search_query = request.GET.get('search','')
         specific_product=request.GET.get('sproduct','')
         productcategory = request.GET.get('category','')
+        productstatus = request.GET.get('status','')
         products = Product.objects.all()
+        if productstatus:
+            products = products.filter(productStatus__iexact=productstatus)
         if productcategory:
             products = products.filter(productCategory__categoryName__exact=productcategory)
         if specific_product:

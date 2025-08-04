@@ -217,6 +217,7 @@
                     <v-col cols="3">
                         <v-select 
                         label="Jackets(132)"
+                        clearable
                         color="grey-darken-2"
                          v-model="product_category"
                         :items="allproducts"
@@ -228,6 +229,10 @@
                        <v-col cols="3">
                         <v-select 
                         label="All Status"
+                        :items="allproducts"
+                        clearable
+                        item-title="productStatus"
+                        v-model="product_status"
                         color="grey-darken-2"
                         density="compact"
                         width="200px"
@@ -358,6 +363,7 @@ function openDialog(item=null) {
   const allproducts= ref([])
   const specificproduct=ref('')
   const product_category=ref('')
+  const product_status=ref('Active')
   function loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
       axiosInst.get('/api/products/', {
@@ -366,7 +372,8 @@ function openDialog(item=null) {
         itemsPerPage: itemsPerPage,
         search:search.value,
         sproduct:specificproduct.value,
-        category:product_category.value
+        category:product_category.value,
+        status:product_status.value
        
       },
     }).then(response => {
@@ -475,6 +482,11 @@ function getImageUrl(path) {
 
   )
   watch(product_category=>{
+     loadItems({ page: 1, itemsPerPage: itemsPerPage.value}); 
+  
+  }
+)
+ watch(product_status=>{
      loadItems({ page: 1, itemsPerPage: itemsPerPage.value}); 
   
   }
