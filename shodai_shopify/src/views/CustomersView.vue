@@ -35,7 +35,7 @@
                     <v-btn 
                  
                   
-                   @click="openDialog"
+                   @click="openDialog()"
                     variant="outlined"
                     width="200px"
                      size="large"
@@ -71,7 +71,8 @@
                         variant="outlined"
                         prepend-inner-icon="mdi-magnify"
                         width="300px"
-                        label="Search Customers"
+                        v-model="search"
+                        label="Search Customers by email"
                         density="compact"
                         color="grey-darken-2"
                         class="text-grey-darken-2"></v-text-field>
@@ -248,28 +249,7 @@
       }
     }
   }
-  const FakeAPI = {
-    async fetch ({ page, itemsPerPage, sortBy }) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          const start = (page - 1) * itemsPerPage
-          const end = start + itemsPerPage
-          const items = desserts.slice()
-          if (sortBy.length) {
-            const sortKey = sortBy[0].key
-            const sortOrder = sortBy[0].order
-            items.sort((a, b) => {
-              const aValue = a[sortKey]
-              const bValue = b[sortKey]
-              return sortOrder === 'desc' ? bValue - aValue : aValue - bValue
-            })
-          }
-          const paginated = items.slice(start, end === -1 ? undefined : end)
-          resolve({ items: paginated, total: items.length })
-        }, 500)
-      })
-    },
-  }
+  
   const itemsPerPage = ref(5)
   const headers = ref([
    
@@ -322,6 +302,8 @@ let form = ref({
   axiosInst.post(`api/createcustomer/`,formdata)
   .then(response =>{
     console.log(response.data)
+     loadItems ({ page:1, itemsPerPage:itemsPerPage.value })
+       dialog.value=false
   }
 
   ).catch( error =>{
@@ -330,10 +312,12 @@ let form = ref({
      
   )
 }
-else{
+else if(isediting.value==true){
   axiosInst.put(`api/updatecustomer/${customerid.value}/`, formdata)
   .then(response =>{
     console.log(response.data)
+     loadItems ({ page:1, itemsPerPage:itemsPerPage.value })
+     dialog.value=false
   }
 
   ).catch(error=>{
@@ -347,6 +331,7 @@ else{
     axiosInst.delete(`api/updatecustomer/${id}/`)
     .then(response =>{
       console.log('Customer deleted successfully', response.data)
+       loadItems ({ page:1, itemsPerPage:itemsPerPage.value })
     }
 
     ).catch(error =>{

@@ -92,8 +92,16 @@ def createCustomer(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method=="GET":
+        page = request.GET.get('page')
+        page_size = request.GET.get('itemsPerPage')
+        search_query = request.GET.get('search')
+    
         customer = Customers.objects.all()
-        serializer = CustomerSerializer(customer, many=True)
+        if search_query:
+            customer = customer.filter(customerEmail__icontains=search_query)
+        paginator = Paginator(customer, page_size)
+        page_obj = paginator.get_page(page)
+        serializer = CustomerSerializer(page_obj.object_list, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 @api_view(['GET','PUT','DELETE'])
 def updateCustomer(request, id):
