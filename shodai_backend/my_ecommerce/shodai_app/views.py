@@ -132,10 +132,11 @@ def createOrder(request):
         page=request.GET.get('page')
         page_size = request.GET.get('itemsPerPage')
         search_query=request.GET.get('search')
-        orderstatus = request.GET.get('status')
+        orderstatus = request.GET.get('status','')
         orders = Orders.objects.all()
-        if status:
+        if orderstatus:
             orders=orders.filter(orderStatus__iexact=orderstatus)
+       
         if search_query:
             orders = orders.filter(OrderId__icontains =search_query)
         paginator = Paginator(orders,page_size)

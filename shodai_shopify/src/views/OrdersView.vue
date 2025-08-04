@@ -9,7 +9,7 @@
                     <v-col cols="5">
                         <v-tabs
                         bg-color="grey-lighten-4" v-model="selectedtab">
-                         <v-tab value="" class="text-grey-darken-1 text-capitalize">All Orders
+                         <v-tab value='' class="text-grey-darken-1 text-capitalize">All Orders
                         </v-tab>
                            <v-tab value="Draft" class="text-grey-darken-1 text-capitalize">Draft</v-tab>
                              <v-tab  value="Cancelled" class="text-grey-darken-1 text-capitalize">Cancelled</v-tab>
@@ -325,7 +325,7 @@ import dayjs from 'dayjs';
   const serverItems = ref([])
   const loading = ref(true)
   const totalItems = ref(0)
-  const selectedtab = ref("Completed")
+  const selectedtab = ref('')
   function loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
       axiosInst.get('api/createorder/',{
