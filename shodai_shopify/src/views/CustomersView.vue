@@ -6,18 +6,18 @@
          <v-card class=" mt-16" >
             <v-card-text>
                 <v-row>
-                    <v-col cols="6">
+                    <v-col cols="4">
                         <v-tabs
-                        bg-color="grey-lighten-4">
-                         <v-tab class="text-grey-darken-1 text-capitalize">All Customers</v-tab>
-                           <v-tab class="text-grey-darken-1 text-capitalize">New Customers</v-tab>
-                             <v-tab  class="text-grey-darken-1 text-capitalize">From Europe</v-tab>
-                               <v-tab  class="text-grey-darken-1 text-capitalize">Asia</v-tab>
-                                  <v-tab  class="text-grey-darken-1 text-capitalize">Others</v-tab>
+                        bg-color="grey-lighten-4" v-model="selectedtab">
+                         <v-tab value="" class="text-grey-darken-1 text-capitalize">All Customers</v-tab>
+                        
+                             <v-tab  value="Europe" class="text-grey-darken-1 text-capitalize">From Europe</v-tab>
+                               <v-tab  value="Asia" class="text-grey-darken-1 text-capitalize">Asia</v-tab>
+                            
                                
                         </v-tabs>
                     </v-col>
-                    <v-col cols="4">
+                    <v-col cols="6">
                          <v-btn 
                     prepend-icon="mdi-tray-arrow-down"
                   
@@ -220,7 +220,7 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { ref ,watch} from 'vue'
   import HeaderComponent from '@/components/HeaderComponent.vue'
   import axiosInst from '@/services/api.js' 
   const dialog = ref(false)
@@ -264,13 +264,15 @@
   const serverItems = ref([])
   const loading = ref(true)
   const totalItems = ref(0)
+  const selectedtab = ref('')
   async function  loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
      await  axiosInst.get(`api/createcustomer/`,{
       params:{
       page:page,
       itemsPerPage:itemsPerPage,
-      search:search.value
+      search:search.value,
+      location:selectedtab.value
       }
      }
      ).then(response =>{
@@ -340,4 +342,9 @@ else if(isediting.value==true){
 
     )
   }
+  watch(selectedtab,(newTab,oldTab)=>{
+loadItems ({ page:1, itemsPerPage:itemsPerPage.value })
+  }
+
+  )
 </script>

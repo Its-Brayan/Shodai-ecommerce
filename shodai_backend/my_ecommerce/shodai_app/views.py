@@ -95,8 +95,10 @@ def createCustomer(request):
         page = request.GET.get('page')
         page_size = request.GET.get('itemsPerPage',5)
         search_query = request.GET.get('search','')
-    
+        customer_location = request.GET.get('location','')
         customer = Customers.objects.all()
+        if customer_location:
+            customer = customer.filter(customerLocation__iexact=customer_location)
         if search_query:
             customer = customer.filter(customerEmail__icontains=search_query)
         paginator = Paginator(customer, page_size)
