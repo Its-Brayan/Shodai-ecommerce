@@ -53,7 +53,7 @@
          </v-card>
          <v-card class="mt-3">
             <v-card-text>
-               <div class="pa-4 text-center">
+             
     <v-dialog
       v-model="dialog"
       max-width="600"
@@ -107,7 +107,7 @@
               <v-select
                 label="Product Category*"
                 required
-                :items="fetchedcategories"
+                :items="fetchedcategories || []"
                 v-model="form.productCategory"
                 item-title="categoryName"
                 item-value="id"
@@ -190,12 +190,12 @@
             :text="isediting ? 'update product' : 'submit product'  "
              class="bg-indigo text-white text-capitalize"
             variant="tonal"
-            @click="submitproducts"
+            @click="submitproducts()"
           ></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+
                 <v-row>
                     <v-col cols="3">
                         <p class="text-subtitle-2">Category</p>
@@ -298,22 +298,23 @@
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import axiosInst from '@/services/api.js'
 const dialog = ref(false)
-function openDialog(item) {
-  dialog.value=true
+function openDialog(item=null) {
+ 
+
   if(item){
       isediting.value = true
        productid.value = item.id
-      form.value.productName = item.productName
-      form.value.productPrice = item.productPrice
-      form.value.ProductNumber = item.ProductNumber
-      form.value.productStatus = item.productStatus
-      form.value.ProductSku = item.ProductSku
-      form.value.productCategory = item.productCategory  
+      form.value.productName = item.productName || ''
+      form.value.productPrice = item.productPrice || ''
+      form.value.ProductNumber = item.ProductNumber || ''
+      form.value.productStatus = item.productStatus || ''
+      form.value.ProductSku = item.ProductSku || ''
+      form.value.productCategory = item.productCategory || ''
       form.value.productImage = null
       
     }
     else {
-        dialog.value=true
+     
       isediting.value = false
     form.value.productName = ''
      form.value.productName= ''
@@ -326,7 +327,7 @@ function openDialog(item) {
      }
     
 
-  
+   dialog.value=true
  
    
 } 
@@ -386,8 +387,8 @@ function openDialog(item) {
  formdata.append('productStatus', form.value.productStatus);
  formdata.append('productImage', form.value.productImage);
  // Here you can send formdata to your API
-if(isediting){
- axiosInst.post('/api/products/', formdata, {
+if(isediting.value==false){
+ axiosInst.post('api/products/', formdata, {
    headers: {
      'Content-Type': 'multipart/form-data'
    }
@@ -399,7 +400,7 @@ if(isediting){
     console.error('Error submitting product:', error);
   });
 }
-else{
+else if(isediting.value==true){
   axiosInst.put(`api/productdetail/${productid.value}/`, formdata,{
     headers:{
       'Content-Type':'multipart/form-data'
@@ -432,7 +433,7 @@ function getImageUrl(path) {
       .then(response => {
         // Handle the response data
         console.log('Categories fetched successfully:', response.data);
-         fetchedcategories.value = response.data;
+         fetchedcategories.value = response.data.results;
       })
       .catch(error => {
         console.error('Error fetching categories:', error);
@@ -454,10 +455,6 @@ function getImageUrl(path) {
         console.error('Error deleting product:', error);
       });
   }
-  watch(search,()=>{
-    loadItems({page:1,itemsPerPage:itemsPerPage.value})
-  }
-
-  )
+  
   
 </script>
