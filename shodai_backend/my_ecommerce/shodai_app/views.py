@@ -61,7 +61,10 @@ def create_product(request):
         page_size = int(request.GET.get('itemsPerPage',5))
         search_query = request.GET.get('search','')
         specific_product=request.GET.get('sproduct','')
+        productcategory = request.GET.get('category','')
         products = Product.objects.all()
+        if productcategory:
+            products = products.filter(productCategory__categoryName__exact=productcategory)
         if specific_product:
             products = products.filter(productName__iexact=specific_product)
         if search_query:

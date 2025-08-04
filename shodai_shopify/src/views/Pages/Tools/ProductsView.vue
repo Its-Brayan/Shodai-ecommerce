@@ -218,6 +218,9 @@
                         <v-select 
                         label="Jackets(132)"
                         color="grey-darken-2"
+                         v-model="product_category"
+                        :items="allproducts"
+                        item-title="categoryName"
                         density="compact"
                         width="200px"
                         variant="outlined"></v-select>
@@ -354,6 +357,7 @@ function openDialog(item=null) {
   const totalItems = ref(0)
   const allproducts= ref([])
   const specificproduct=ref('')
+  const product_category=ref('')
   function loadItems ({ page, itemsPerPage, sortBy }) {
     loading.value = true
       axiosInst.get('/api/products/', {
@@ -361,7 +365,8 @@ function openDialog(item=null) {
         page: page, 
         itemsPerPage: itemsPerPage,
         search:search.value,
-        sproduct:specificproduct.value
+        sproduct:specificproduct.value,
+        category:product_category.value
        
       },
     }).then(response => {
@@ -469,4 +474,9 @@ function getImageUrl(path) {
   }
 
   )
+  watch(product_category=>{
+     loadItems({ page: 1, itemsPerPage: itemsPerPage.value}); 
+  
+  }
+)
 </script>
