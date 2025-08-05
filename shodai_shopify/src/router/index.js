@@ -54,6 +54,16 @@ const router = createRouter({
       path:'/help',
       name: 'Help',
       component: () => import('../views/Pages/Settings/HelpView.vue'),
+    },
+     {
+      path:'/signup',
+      name: 'Help',
+      component: () => import('../views/Pages/Authentication/Signup.vue'),
+    },
+     {
+      path:'/login',
+      name: 'Login',
+      component: () => import('../views/Pages/Authentication/Login.vue'),
     }
   ],
 })

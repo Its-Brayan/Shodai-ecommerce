@@ -236,6 +236,7 @@
                         color="grey-darken-2"
                         v-model="selectedpricerange"
                         :items="priceranges"
+                        clearable
                         item-title="text"
                         density="compact"
                         width="200px"
