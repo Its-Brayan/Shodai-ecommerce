@@ -57,13 +57,15 @@ const router = createRouter({
     },
      {
       path:'/signup',
-      name: 'Help',
+      name: 'signup',
       component: () => import('../views/Pages/Authentication/Signup.vue'),
+      meta:{hideNavigation:true}
     },
      {
       path:'/login',
-      name: 'Login',
+      name: 'login',
       component: () => import('../views/Pages/Authentication/Login.vue'),
+      meta:{hideNavigation:true}
     }
   ],
 })

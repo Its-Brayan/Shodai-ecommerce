@@ -35,7 +35,7 @@
             <v-list-subheader>SETTINGS</v-list-subheader>
             <v-list-item class="text-subtitle-2" prepend-icon="mdi-home-variant-outline" title="Settings" to="/settings" value="home"></v-list-item>
           <v-list-item class="text-subtitle-2" prepend-icon="mdi-shopping-outline" title="Help" to="/help" value="account"></v-list-item>
-           <v-list-item class="text-subtitle-2" prepend-icon="mdi-shopping-outline" title="Help" to="/help" value="account"></v-list-item>
+      
         </v-list>
         
       </v-navigation-drawer>
@@ -43,3 +43,9 @@
     </v-layout>
   </v-card>
 </template>
+<script setup>
+import {ref} from 'vue'
+import { useRoute } from 'vue-router';
+
+const route = useRoute()
+</script>

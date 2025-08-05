@@ -18,10 +18,10 @@
             </v-col>
         </v-row>
     </v-card-title>
-    <v-card-text class="d-flex justify-center">
+    <v-card-text class="d-flex justify-center ml-16  " >
         <v-row>
         <v-col cols="5" class=" mt-16">
-            <v-card class="pa-15" height="600px" >
+            <v-card class="pa-15 ml-16" height="600px" >
                 <v-card-title>
          <div class="d-flex font-weight-medium text-h5 justify-start">
                     Create an Account
@@ -54,7 +54,7 @@
            </v-card>
          </v-col>
          <v-col cols="5" class=" mt-16">
-            <v-card class="bg-indigo ml-n6" height="600px">
+            <v-card class="bg-indigo ml-n6  pa-4 " height="600px">
                 <v-card-title></v-card-title>
                 <v-card-text>
             <v-img

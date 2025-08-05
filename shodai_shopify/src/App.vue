@@ -1,12 +1,13 @@
 <script setup>
 import MenuComponent from './components/MenuComponent.vue';
-import { RouterView } from 'vue-router';
+import { RouterView,useRoute } from 'vue-router';
+const route=useRoute()
 </script>
 
 <template>
   <v-app>
     <v-layout>
-      <MenuComponent/>
+      <MenuComponent v-if="!route.meta.hideNavigation"/>
   <v-main>
      <RouterView />
     </v-main>
