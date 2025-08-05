@@ -51,22 +51,8 @@
       
           <v-card class="mt-2">
             <v-card-title class="mt-3 pa-6">
-                <v-row>
-                    <v-col cols="1">
-                 <v-btn 
-                    prepend-icon="mdi-filter-outline"
+              
                   
-                   
-                    variant="outlined"
-                    width="120px"
-                     size="large"
-                    class="text-capitalize  d-flex-justify-start bg-grey-lighten-3"
-                    >
-                 Filter
-                        
-                    </v-btn>
-                    </v-col>
-                    <v-col cols="2">
                         <v-text-field
                         variant="outlined"
                         prepend-inner-icon="mdi-magnify"
@@ -75,10 +61,8 @@
                         label="Search Customers by email"
                         density="compact"
                         color="grey-darken-2"
-                        class="text-grey-darken-2"></v-text-field>
-                    </v-col>
-
-                    </v-row>
+                        class="text-grey-darken-2 float-right"></v-text-field>
+                   
             </v-card-title>
               <v-dialog
       v-model="dialog"
