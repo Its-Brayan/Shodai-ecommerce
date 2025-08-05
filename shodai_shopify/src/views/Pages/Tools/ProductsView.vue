@@ -30,14 +30,7 @@
                         width="200px"
                         variant="outlined"></v-autocomplete>
                     </v-col>
-                     <v-col cols="2">
-                        <v-select 
-                        label="Sort By"
-                        color="grey-darken-2"
-                        density="compact"
-                        width="200px"
-                        variant="outlined"></v-select>
-                    </v-col>
+
                     <v-col>
                     <v-btn 
                     prepend-icon="mdi-plus"
@@ -210,9 +203,7 @@
                       <v-col cols="3">
                         <p class="text-subtitle-2">Price</p>
                     </v-col>
-                      <v-col cols="3">
-                        <p class="text-subtitle-2">Store</p>
-                    </v-col>
+                    
                 </v-row>
                 <v-row>
                     <v-col cols="3">
@@ -221,7 +212,7 @@
                         clearable
                         color="grey-darken-2"
                          v-model="product_category"
-                        :items="allproducts"
+                        :items="fetchedcategories"
                         item-title="categoryName"
                         density="compact"
                         width="200px"
@@ -230,9 +221,9 @@
                        <v-col cols="3">
                         <v-select 
                         label="All Status"
-                        :items="allproducts"
+                        :items="['Active','Inactive']"
                         clearable
-                        item-title="productStatus"
+                     
                         v-model="product_status"
                         color="grey-darken-2"
                         density="compact"
@@ -250,14 +241,7 @@
                         width="200px"
                         variant="outlined"></v-select>
                     </v-col>
-                       <v-col cols="3">
-                        <v-select 
-                        label="All Stores"
-                        color="grey-darken-2"
-                        density="compact"
-                        width="200px"
-                        variant="outlined"></v-select>
-                    </v-col>
+                    
                 </v-row>
             </v-card-text>
          </v-card>
