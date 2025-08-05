@@ -22,6 +22,7 @@
                     <v-col cols="2">
                         <v-autocomplete
                         :items="allproducts"
+                        clearable
                         v-model="specificproduct"
                         item-title="productName"
                         label="all products"
@@ -240,8 +241,11 @@
                     </v-col>
                        <v-col cols="3">
                         <v-select 
-                        label="$50-$100"
+                        label="$0-$100"
                         color="grey-darken-2"
+                        v-model="selectedpricerange"
+                        :items="priceranges"
+                        item-title="text"
                         density="compact"
                         width="200px"
                         variant="outlined"></v-select>
@@ -310,6 +314,7 @@ import HeaderComponent from '@/components/HeaderComponent.vue'
 import axiosInst from '@/services/api.js'
 import { all } from 'axios'
 const dialog = ref(false)
+const product_image=ref(null)
 function openDialog(item=null) {
  
 
@@ -323,7 +328,7 @@ function openDialog(item=null) {
       form.value.ProductSku = item.ProductSku || ''
       form.value.productCategory = item.productCategory || ''
       form.value.productImage = null
-      
+  
     }
     else {
      
@@ -343,7 +348,14 @@ function openDialog(item=null) {
  
    
 } 
-
+const selectedpricerange=ref(null)
+const priceranges=ref([
+  {text:'All',value:''},
+  {text:'0-1000',value:'0-1000'},
+  {text:'1000-5000',value:'0-5000'},
+  {text:'5000-10000',value:'5000-10000'},
+  {text:'10000+',value:'10000-'}
+])
      
   const itemsPerPage = ref(5)
   const headers = ref([
@@ -373,7 +385,9 @@ function openDialog(item=null) {
         search:search.value,
         sproduct:specificproduct.value,
         category:product_category.value,
-        status:product_status.value
+        status:product_status.value,
+        price_range:selectedpricerange.value
+        
        
       },
     }).then(response => {
@@ -487,6 +501,11 @@ function getImageUrl(path) {
   }
 )
  watch(product_status=>{
+     loadItems({ page: 1, itemsPerPage: itemsPerPage.value}); 
+  
+  }
+)
+ watch(selectedpricerange=>{
      loadItems({ page: 1, itemsPerPage: itemsPerPage.value}); 
   
   }

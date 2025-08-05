@@ -63,7 +63,19 @@ def create_product(request):
         specific_product=request.GET.get('sproduct','')
         productcategory = request.GET.get('category','')
         productstatus = request.GET.get('status','')
+        filterbyprice = request.GET.get('price_range','')
         products = Product.objects.all()
+        if filterbyprice:
+            try:
+                parts = filterbyprice.split('-')
+                min_price = float(parts[0]) if parts[0] else 0
+                max_price = float(parts[1]) if len(parts) > 1 and parts[1] else None
+                if min_price:
+                    products = products.filter(productPrice__gte=min_price)
+                if max_price is not None:
+                    products = products.filter(productPrice__lte=max_price)
+            except (ValueError, IndexError):
+             return Response({"error": "Invalid price range format"}, status=400)
         if productstatus:
             products = products.filter(productStatus__iexact=productstatus)
         if productcategory:
