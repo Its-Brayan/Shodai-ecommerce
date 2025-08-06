@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 class Category(models.Model):
     categoryImage = models.ImageField(upload_to='categories/')
     categoryName = models.CharField(max_length=100)
@@ -26,5 +27,10 @@ class Orders(models.Model):
     paymentMethod = models.CharField(max_length=50)
     amountPaid = models.FloatField(default=0,null=True,blank=True)
     orderStatus = models.CharField(max_length=100)
+class CustomUser(AbstractUser):
 
+    fullname = models.CharField(max_length=140)
+    email = models.EmailField(unique=True)
+     
+    
 # Create your models here.

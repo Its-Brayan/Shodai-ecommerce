@@ -21,7 +21,7 @@
     <v-card-text class="d-flex justify-center ml-16  " >
         <v-row>
         <v-col cols="5" class=" mt-16">
-            <v-card class="pa-15 ml-16" height="600px" >
+            <v-card class="pa-15 ml-16" height="700px" >
                 <v-card-title>
          <div class="d-flex font-weight-medium text-h5 justify-start">
                     Create an Account
@@ -44,6 +44,11 @@
             </v-text-field>
          </div>
            <div class="mt-3">
+            <v-text-field label="Confirm Password" :append-inner-icon="visible1 ? 'mdi-eye-off' : 'mdi-eye'" :type="visible1 ? 'text' : 'password'"  @click:append-inner="visible1 = !visible1" variant="outlined">
+
+            </v-text-field>
+         </div>
+           <div class="mt-3">
             <v-btn block size="large" rounded="lg" variant="outlined" class="bg-indigo text-capitalize">
              Sign up
             </v-btn>
@@ -54,7 +59,7 @@
            </v-card>
          </v-col>
          <v-col cols="5" class=" mt-16">
-            <v-card class="bg-indigo ml-n6  pa-4 " height="600px">
+            <v-card class="bg-indigo ml-n6  pa-4 " height="700px">
                 <v-card-title></v-card-title>
                 <v-card-text>
             <v-img
@@ -76,5 +81,5 @@
 <script setup>
 import {ref,watch} from 'vue'
 const visible = ref(false)
-
+const visible1 = ref(false)
 </script>
