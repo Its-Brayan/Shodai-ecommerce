@@ -29,27 +29,27 @@
          </v-card-title>
          <v-card-text>
          <div class="mt-3">
-            <v-text-field label="Enter Your Name" variant="outlined" color="bg-grey">
+            <v-text-field label="Enter Your Name" v-model="form.fullname" variant="outlined" color="bg-grey">
 
             </v-text-field>
          </div>
           <div class="mt-3">
-            <v-text-field label="Enter Your Email" variant="outlined" color="bg-grey">
+            <v-text-field label="Enter Your Email" v-model="form.email" variant="outlined" color="bg-grey">
 
             </v-text-field>
          </div>
           <div class="mt-3">
-            <v-text-field label="Enter Your Password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"  @click:append-inner="visible = !visible" variant="outlined">
+            <v-text-field label="Enter Your Password" v-model="form.password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"  @click:append-inner="visible = !visible" variant="outlined">
 
             </v-text-field>
          </div>
            <div class="mt-3">
-            <v-text-field label="Confirm Password" :append-inner-icon="visible1 ? 'mdi-eye-off' : 'mdi-eye'" :type="visible1 ? 'text' : 'password'"  @click:append-inner="visible1 = !visible1" variant="outlined">
+            <v-text-field label="Confirm Password" v-model="form.confirm_password" :append-inner-icon="visible1 ? 'mdi-eye-off' : 'mdi-eye'" :type="visible1 ? 'text' : 'password'"  @click:append-inner="visible1 = !visible1" variant="outlined">
 
             </v-text-field>
          </div>
            <div class="mt-3">
-            <v-btn block size="large" rounded="lg" variant="outlined" class="bg-indigo text-capitalize">
+            <v-btn block size="large" @click="registerUser" rounded="lg" variant="outlined" class="bg-indigo text-capitalize">
              Sign up
             </v-btn>
          </div>
@@ -80,6 +80,33 @@
 
 <script setup>
 import {ref,watch} from 'vue'
+import axiosInst from '@/services/api.js'
 const visible = ref(false)
 const visible1 = ref(false)
+
+let form = ref({
+    fullname : '',
+    email:'',
+    password:'',
+    confirm_password:'',
+   
+
+
+})
+function registerUser(){
+    const formdata ={
+        ...form.value,
+        username : form.value.email
+    }
+    axiosInst.post(`api/register/`,formdata)
+    .then( response =>{
+        console.log("User register successfully", response.data)
+    }
+
+    ).catch(error=>{
+        console.error("Failed to register user", error)
+    }
+
+    )
+}
 </script>

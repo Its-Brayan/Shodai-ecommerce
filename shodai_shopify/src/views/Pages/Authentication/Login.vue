@@ -33,12 +33,12 @@
          <v-card-text>
      
           <div class="mt-3">
-            <v-text-field label="Enter Your Email" variant="outlined" color="bg-grey">
+            <v-text-field label="Enter Your Email" v-model="username" variant="outlined" color="bg-grey">
 
             </v-text-field>
          </div>
           <div class="mt-3">
-            <v-text-field label="Enter Your Password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"  @click:append-inner="visible = !visible" variant="outlined">
+            <v-text-field label="Enter Your Password"  v-model="password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"  @click:append-inner="visible = !visible" variant="outlined">
 
             </v-text-field>
          </div>
@@ -75,5 +75,10 @@
 <script setup>
 import {ref,watch} from 'vue'
 const visible = ref(false)
-
+let form = {
+    
+}
+ function loginuser(){
+     
+ }
 </script>

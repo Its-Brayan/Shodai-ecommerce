@@ -8,6 +8,9 @@ urlpatterns =[
     path('createcustomer/',createCustomer ),
     path('updatecustomer/<int:id>/', updateCustomer),
     path('createorder/',createOrder),
-    path('updateorder/<int:id>/',updateOrder)   
+    path('updateorder/<int:id>/',updateOrder),
+    path('register/',registerUser),
+    path('login/',loginUser)
+
 
 ]

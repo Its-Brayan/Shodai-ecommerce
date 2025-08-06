@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth import authenticate, login
 from .models import *
 from django.core.paginator import Paginator
 from .serializers import *
@@ -186,4 +187,34 @@ def updateOrder(request,id):
     elif request.method=="DELETE":
          order.delete()
          return Response(status=status.HTTP_204_NO_CONTENT) 
+@api_view(['POST'])
+def registerUser(request):
+    serializer = CustomUserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'success':True,
+            'message':'User Created successfully',
+            'user':serializer.data,
+            }, status = status.HTTP_201_CREATED)
+    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+def loginUser(request):
+    email = request.data.get('email')
+    password = request.data.get('password')
+    user = authenticate(request, username=email,password=password)
+    if user:
+        login(request,user)
+        serializer = CustomUserSerializer(user)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    'success':True,
+                    'user':serializer.data
+                },status=status.HTTP_200_OK)
+    return Response({
+          'success':False,
+          'message':'Invalid Credentials',
+    }, status=status.HTTP_401_UNAUTHORIZED)
 # Create your views here.
