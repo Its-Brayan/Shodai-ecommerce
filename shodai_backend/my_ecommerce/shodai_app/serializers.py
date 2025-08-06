@@ -1,7 +1,7 @@
 from .models import *
 from rest_framework import serializers
-
-
+from django.contrib.auth import get_user_model
+user = get_user_model()
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -41,3 +41,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             user.set_password(password)
             user.save()
             return user
+class UserResponseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = user
+        fields = ('id', 'email', 'fullname', 'date_joined')

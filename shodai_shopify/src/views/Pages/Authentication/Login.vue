@@ -33,17 +33,17 @@
          <v-card-text>
      
           <div class="mt-3">
-            <v-text-field label="Enter Your Email" v-model="username" variant="outlined" color="bg-grey">
+            <v-text-field label="Enter Your Email" :rules="[emailRules]" v-model="form.email" variant="outlined" color="bg-grey">
 
             </v-text-field>
          </div>
           <div class="mt-3">
-            <v-text-field label="Enter Your Password"  v-model="password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"  @click:append-inner="visible = !visible" variant="outlined">
+            <v-text-field label="Enter Your Password" :rules="[passwordRules]" v-model="form.password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"  @click:append-inner="visible = !visible" variant="outlined">
 
             </v-text-field>
          </div>
            <div class="mt-3">
-            <v-btn block size="large" rounded="lg" variant="outlined" class="bg-indigo text-capitalize">
+            <v-btn block size="large" @click="loginuser":loading="loading" rounded="lg" variant="outlined" class="bg-indigo text-capitalize">
              login
             </v-btn>
          </div>
@@ -74,11 +74,41 @@
 
 <script setup>
 import {ref,watch} from 'vue'
+
+import { useRouter } from 'vue-router'
+// import { useRules } from 'vuetify/labs/rules'
+import axiosInst from '@/services/api.js'
+ const router=useRouter()
 const visible = ref(false)
-let form = {
-    
-}
+const loading = ref(false)
+let form = ref({
+ email:'',
+ password:''
+})
  function loginuser(){
-     
+    const formdata = {
+        ...form.value
+    }
+      if (!form.value) return
+    loading.value = true
+    setTimeout(() => (loading.value = false), 2000)
+     axiosInst.post(`api/login/`,formdata)
+     .then( response =>{
+        if(response.data.success){
+            console.log("Login successfull",response.data)
+            localStorage.setItem('access_token', response.data.tokens.access_token)
+            localStorage.setItem('refresh_token', response.data.tokens.refresh_token)
+            
+            //store user data
+            localStorage.setItem('user',JSON.stringify(response.data.user))
+            router.push('/')
+        }
+     }
+        
+     ).catch(error =>{
+        console.error("login failed",error)
+     }
+
+     )
  }
 </script>

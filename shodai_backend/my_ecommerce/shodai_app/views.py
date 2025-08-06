@@ -1,10 +1,12 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, login
 from .models import *
 from django.core.paginator import Paginator
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny
 from .serializers import *
 
 @api_view(['GET', 'POST'])
@@ -188,30 +190,48 @@ def updateOrder(request,id):
          order.delete()
          return Response(status=status.HTTP_204_NO_CONTENT) 
 @api_view(['POST'])
+@permission_classes([AllowAny]) 
 def registerUser(request):
     serializer = CustomUserSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        access_token = refresh.access_token
+        user_serializer = UserResponseSerializer(user)
         return Response({
             'success':True,
             'message':'User Created successfully',
-            'user':serializer.data,
+            'user':user_serializer.data,
+            'tokens':{
+                'refresh':str(refresh),
+                'access':str(access_token)
+            }
             }, status = status.HTTP_201_CREATED)
     return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 @api_view(['POST'])
+@permission_classes([AllowAny]) 
 def loginUser(request):
     email = request.data.get('email')
     password = request.data.get('password')
+    if not email or not password:
+        return Response({
+            'success':False,
+            'message':'Email and Password are required'
+        }, status=status.HTTP_400_BAD_REQUEST)
     user = authenticate(request, username=email,password=password)
     if user:
+        refresh = RefreshToken.for_user(user)
+        access_token = refresh.access_token
         login(request,user)
-        serializer = CustomUserSerializer(user)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(
+        user_serializer = UserResponseSerializer(user)
+        return Response(
                 {
                     'success':True,
-                    'user':serializer.data
+                    'user':user_serializer.data,
+                    'tokens':{
+                        'refresh':str(refresh),
+                        'access':str(access_token)
+                    }
                 },status=status.HTTP_200_OK)
     return Response({
           'success':False,

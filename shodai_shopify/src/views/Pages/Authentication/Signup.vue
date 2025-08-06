@@ -29,27 +29,27 @@
          </v-card-title>
          <v-card-text>
          <div class="mt-3">
-            <v-text-field label="Enter Your Name" v-model="form.fullname" variant="outlined" color="bg-grey">
+            <v-text-field label="Enter Your Name" :rules="[required]" v-model="form.fullname" variant="outlined" color="bg-grey">
 
             </v-text-field>
          </div>
           <div class="mt-3">
-            <v-text-field label="Enter Your Email" v-model="form.email" variant="outlined" color="bg-grey">
+            <v-text-field label="Enter Your Email" :rules="[required]" v-model="form.email" variant="outlined" color="bg-grey">
 
             </v-text-field>
          </div>
           <div class="mt-3">
-            <v-text-field label="Enter Your Password" v-model="form.password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"  @click:append-inner="visible = !visible" variant="outlined">
+            <v-text-field label="Enter Your Password":rules="[required]" v-model="form.password" :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"  @click:append-inner="visible = !visible" variant="outlined">
 
             </v-text-field>
          </div>
            <div class="mt-3">
-            <v-text-field label="Confirm Password" v-model="form.confirm_password" :append-inner-icon="visible1 ? 'mdi-eye-off' : 'mdi-eye'" :type="visible1 ? 'text' : 'password'"  @click:append-inner="visible1 = !visible1" variant="outlined">
+            <v-text-field label="Confirm Password" :rules="[required]" v-model="form.confirm_password" :append-inner-icon="visible1 ? 'mdi-eye-off' : 'mdi-eye'" :type="visible1 ? 'text' : 'password'"  @click:append-inner="visible1 = !visible1" variant="outlined">
 
             </v-text-field>
          </div>
            <div class="mt-3">
-            <v-btn block size="large" @click="registerUser" rounded="lg" variant="outlined" class="bg-indigo text-capitalize">
+            <v-btn block size="large" :loading="loading" @click="registerUser" rounded="lg" variant="outlined" class="bg-indigo text-capitalize">
              Sign up
             </v-btn>
          </div>
@@ -81,9 +81,14 @@
 <script setup>
 import {ref,watch} from 'vue'
 import axiosInst from '@/services/api.js'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const visible = ref(false)
 const visible1 = ref(false)
-
+ const loading = ref(false)
+  function required (v) {
+    return !!v || 'Field is required'
+  }
 let form = ref({
     fullname : '',
     email:'',
@@ -98,10 +103,23 @@ function registerUser(){
         ...form.value,
         username : form.value.email
     }
+    if (!form.value) return
+    loading.value = true
+    setTimeout(() => (loading.value = false), 2000)
     axiosInst.post(`api/register/`,formdata)
     .then( response =>{
         console.log("User register successfully", response.data)
+        if (response.data.tokens) {
+            localStorage.setItem('access_token', response.data.tokens.access)
+            localStorage.setItem('refresh_token', response.data.tokens.refresh)
+            
+            // Optionally store user data
+            localStorage.setItem('user', JSON.stringify(response.data.user))
+            
+            // Redirect to dashboard or home page
+            router.push('/') 
     }
+}
 
     ).catch(error=>{
         console.error("Failed to register user", error)
