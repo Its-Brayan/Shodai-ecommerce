@@ -44,8 +44,8 @@
   </v-card>
 </template>
 <script setup>
-import {ref} from 'vue'
-import { useRoute } from 'vue-router';
+import {ref,onMounted} from 'vue'
+import { useRoute,useRouter } from 'vue-router';
 
-const route = useRoute()
+
 </script>

@@ -1,13 +1,22 @@
 <script setup>
+import {ref, onMounted} from 'vue'
 import MenuComponent from './components/MenuComponent.vue';
-import { RouterView,useRoute } from 'vue-router';
-const route=useRoute()
+import { RouterView,useRoute,useRouter } from 'vue-router';
+
+
+const route = useRoute()
+const router = useRouter()
+const routerready = ref(false)
+onMounted(async ()=>{
+  await router.isReady()
+  routerready.value=true
+})
 </script>
 
 <template>
   <v-app>
     <v-layout>
-      <MenuComponent v-if="!route.meta.hideNavigation"/>
+      <MenuComponent v-if="routerready && !route.meta.hideNavigation"/>
   <v-main>
      <RouterView />
     </v-main>
