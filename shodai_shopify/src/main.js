@@ -3,6 +3,7 @@
 import { VDateInput } from 'vuetify/labs/VDateInput'
  import { VFileUpload } from 'vuetify/labs/VFileUpload'
 import { createApp } from 'vue'
+
 import { createPinia } from 'pinia'
 import { createRulesPlugin } from 'vuetify/labs/rules'
 import 'vuetify/styles'

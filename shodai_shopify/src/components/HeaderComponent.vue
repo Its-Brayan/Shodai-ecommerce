@@ -41,7 +41,7 @@
           v-bind="props"
           class="text-capitalize"
         >
-                  Brayan Mwangi
+                  Admin
                 <v-icon style="cursor: pointer;" size="small">mdi-menu-down</v-icon>
         </v-btn>
       </template>
@@ -72,6 +72,7 @@
 import { ref } from 'vue'
 import { AuthStore } from '@/stores/authstore'
 
+import { toast } from 'vue-sonner'
 const store = AuthStore()
 const loggingOut = ref(false)
 
@@ -79,6 +80,7 @@ const handleLogout = async () => {
   loggingOut.value = true
   try {
     await store.logout()
+    
   } catch (error) {
     console.error('Logout failed:', error)
   } finally {

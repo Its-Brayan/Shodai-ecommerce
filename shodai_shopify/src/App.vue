@@ -2,7 +2,8 @@
 import {ref, onMounted} from 'vue'
 import MenuComponent from './components/MenuComponent.vue';
 import { RouterView,useRoute,useRouter } from 'vue-router';
-
+import { Toaster, toast } from 'vue-sonner'
+import 'vue-sonner/style.css'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,6 +18,7 @@ onMounted(async ()=>{
   <v-app>
     <v-layout>
       <MenuComponent v-if="routerready && !route.meta.hideNavigation"/>
+        <Toaster theme="light"  position ="top-right"/>
   <v-main>
      <RouterView />
     </v-main>
