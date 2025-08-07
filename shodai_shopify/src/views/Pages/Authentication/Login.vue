@@ -96,8 +96,8 @@ let form = ref({
      .then( response =>{
         if(response.data.success){
             console.log("Login successfull",response.data)
-            localStorage.setItem('access_token', response.data.tokens.access_token)
-            localStorage.setItem('refresh_token', response.data.tokens.refresh_token)
+            localStorage.setItem('access_token', response.data.tokens.access)
+            localStorage.setItem('refresh_token', response.data.tokens.refresh)
             
             //store user data
             localStorage.setItem('user',JSON.stringify(response.data.user))

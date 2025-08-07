@@ -220,8 +220,8 @@ def loginUser(request):
         }, status=status.HTTP_400_BAD_REQUEST)
     user = authenticate(request, username=email,password=password)
     if user:
-        refresh = RefreshToken.for_user(user)
-        access_token = refresh.access_token
+        refresh_token = RefreshToken.for_user(user)
+        access_token = refresh_token.access_token
         login(request,user)
         user_serializer = UserResponseSerializer(user)
         return Response(
@@ -229,7 +229,7 @@ def loginUser(request):
                     'success':True,
                     'user':user_serializer.data,
                     'tokens':{
-                        'refresh':str(refresh),
+                        'refresh':str(refresh_token),
                         'access':str(access_token)
                     }
                 },status=status.HTTP_200_OK)
