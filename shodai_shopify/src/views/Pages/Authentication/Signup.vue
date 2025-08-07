@@ -121,7 +121,7 @@ function registerUser(){
               store.updateIsLoggedInToTrue(response.data.user)
             // Redirect to dashboard or home page
             router.push('/dashboard') 
-            toast.success(`Welcome ${response.data.user}`)
+            toast.success(`Welcome ${response.data.user.fullname}`)
     }
 }
 
