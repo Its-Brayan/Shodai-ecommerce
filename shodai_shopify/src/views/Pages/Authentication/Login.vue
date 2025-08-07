@@ -74,8 +74,9 @@
 
 <script setup>
 import {ref,watch} from 'vue'
-
+import { AuthStore } from '@/stores/authstore'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 // import { useRules } from 'vuetify/labs/rules'
 import axiosInst from '@/services/api.js'
  const router=useRouter()
@@ -91,6 +92,7 @@ let form = ref({
     }
       if (!form.value) return
     loading.value = true
+    const store = AuthStore()
     setTimeout(() => (loading.value = false), 2000)
      axiosInst.post(`api/login/`,formdata)
      .then( response =>{
@@ -99,14 +101,18 @@ let form = ref({
             localStorage.setItem('access_token', response.data.tokens.access)
             localStorage.setItem('refresh_token', response.data.tokens.refresh)
             
+            const userdata = response.data.user
             //store user data
             localStorage.setItem('user',JSON.stringify(response.data.user))
+             store.updateIsLoggedInToTrue()
             router.push('/')
+            toast.success(`Welocome back ${userdata}`)
         }
      }
         
      ).catch(error =>{
         console.error("login failed",error)
+        toast.error("login failed")
      }
 
      )

@@ -81,11 +81,14 @@
 <script setup>
 import {ref,watch} from 'vue'
 import axiosInst from '@/services/api.js'
+import { AuthStore } from '@/stores/authstore'
 import { useRouter } from 'vue-router'
+import { toast } from 'vue-sonner'
 const router = useRouter()
 const visible = ref(false)
 const visible1 = ref(false)
  const loading = ref(false)
+ const store = AuthStore()
   function required (v) {
     return !!v || 'Field is required'
   }
@@ -112,12 +115,13 @@ function registerUser(){
         if (response.data.tokens) {
             localStorage.setItem('access_token', response.data.tokens.access)
             localStorage.setItem('refresh_token', response.data.tokens.refresh)
-            
+         
             // Optionally store user data
             localStorage.setItem('user', JSON.stringify(response.data.user))
-            
+              store.updateIsLoggedInToTrue(response.data.user)
             // Redirect to dashboard or home page
             router.push('/') 
+            toast.success(`Welcome ${response.data.user}`)
     }
 }
 
