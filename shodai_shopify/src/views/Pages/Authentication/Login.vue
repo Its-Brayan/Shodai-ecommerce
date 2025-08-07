@@ -100,12 +100,12 @@ let form = ref({
             console.log("Login successfull",response.data)
             localStorage.setItem('access_token', response.data.tokens.access)
             localStorage.setItem('refresh_token', response.data.tokens.refresh)
-            
+
             const userdata = response.data.user
             //store user data
             localStorage.setItem('user',JSON.stringify(response.data.user))
              store.updateIsLoggedInToTrue()
-            router.push('/')
+            router.push('/dashboard')
             toast.success(`Welocome back ${userdata}`)
         }
      }

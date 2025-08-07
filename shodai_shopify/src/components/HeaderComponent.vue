@@ -48,7 +48,7 @@
 
       <v-list>
         <v-list-item>
-            <v-btn nav to="/login" block prepend-icon="mdi-power" variant="text" color="red">
+            <v-btn :loading="loggingout"  @click="handleLogout" block prepend-icon="mdi-power" variant="text" color="red">
           <v-list-item-title prepend-icon="mdi-power">Sign out</v-list-item-title>
           
           </v-btn>
@@ -67,3 +67,22 @@
           
         </v-card-title>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import { AuthStore } from '@/stores/authstore'
+
+const store = AuthStore()
+const loggingOut = ref(false)
+
+const handleLogout = async () => {
+  loggingOut.value = true
+  try {
+    await store.logout()
+  } catch (error) {
+    console.error('Logout failed:', error)
+  } finally {
+    loggingOut.value = false
+  }
+}
+</script>

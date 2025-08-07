@@ -120,7 +120,7 @@ function registerUser(){
             localStorage.setItem('user', JSON.stringify(response.data.user))
               store.updateIsLoggedInToTrue(response.data.user)
             // Redirect to dashboard or home page
-            router.push('/') 
+            router.push('/dashboard') 
             toast.success(`Welcome ${response.data.user}`)
     }
 }
