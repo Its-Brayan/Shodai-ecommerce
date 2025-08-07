@@ -32,11 +32,35 @@
                 </v-col>
                 <v-col>
                    
-                    <p class="text-subtitle-1 mt-1">Brayan mwangi</p>
+                <v-menu
+      transition="slide-x-transition"
+    >
+      <template v-slot:activator="{ props }">
+        <v-btn
+          color="primary"
+          v-bind="props"
+          class="text-capitalize"
+        >
+                  Brayan Mwangi
+                <v-icon style="cursor: pointer;" size="small">mdi-menu-down</v-icon>
+        </v-btn>
+      </template>
+
+      <v-list>
+        <v-list-item>
+            <v-btn nav to="/login" block prepend-icon="mdi-power" variant="text" color="red">
+          <v-list-item-title prepend-icon="mdi-power">Sign out</v-list-item-title>
+          
+          </v-btn>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
                    
                 </v-col>
                 <v-col class="ml-n5" >
-                    <v-icon style="cursor: pointer;" size="small">mdi-menu-down</v-icon>
+
+              
                 </v-col>
                 </div>
             </v-row>
