@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 class Category(models.Model):
-    categoryImage = models.ImageField(upload_to='categories/')
+    categoryImage =  models.URLField(max_length=100000,blank=True,null=True)
     categoryName = models.CharField(max_length=100)
     categoryDescription = models.TextField()
     categoryStatus = models.TextField(max_length=10)
 class Product(models.Model):
-    productImage = models.ImageField(upload_to='products/')
+    productImage = models.URLField(max_length=10000,blank=True,null=True)
     productName = models.CharField(max_length=100)
     ProductSku = models.CharField(max_length=50, unique=True)
     ProductNumber = models.IntegerField(default=0,null=True, blank=True)

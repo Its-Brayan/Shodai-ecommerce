@@ -100,7 +100,7 @@ let form = ref({
             console.log("Login successfull",response.data)
             localStorage.setItem('access_token', response.data.tokens.access)
             localStorage.setItem('refresh_token', response.data.tokens.refresh)
-
+             const message=response.data.message
             const userdata = response.data.user
             //store user data
             localStorage.setItem('user',JSON.stringify(response.data.user))
@@ -112,7 +112,7 @@ let form = ref({
         
      ).catch(error =>{
         console.error("login failed",error)
-        toast.error("login failed")
+        toast.error(`Invalid Credentials`)
      }
 
      )

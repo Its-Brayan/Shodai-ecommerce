@@ -86,12 +86,12 @@
               md="11"
               sm="10"
             >
-          <v-file-upload  v-model="form.categoryImage" clearable density="compact" title="Drag and drop Category Image"
-          ><div v-if="form.categoryImagePreview && !form.categoryImage" class="mt-2">
-            Hii
-  <v-img :src="getImageUrl(form.categoryImagePreview)" max-width="100" max-height="100" />
-</div>
-        </v-file-upload>
+<v-text-field
+  label="Product Image URL"
+  v-model="form.categoryImage"
+  variant="outlined"
+  density="compact"
+/>
             </v-col>
             
          </v-row>
@@ -182,8 +182,9 @@ import axiosInst from '@/services/api.js'
     form.value.categoryName = item.categoryName 
      form.value.categoryDescription= item.categoryDescription
     form.value.categoryStatus = item.categoryStatus
-    form.value.categoryImage = null
-    form.value.categoryImagePreview = item.categoryImage
+    form.value.categoryImage = item.categoryImage
+    
+  
     }else{
       isediting.value = false
       form.value.categoryName = ''

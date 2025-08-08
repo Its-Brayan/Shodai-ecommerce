@@ -170,7 +170,13 @@
               md="11"
               sm="10"
             >
-              <v-file-upload density="compact" v-model="form.productImage"></v-file-upload>
+             <v-text-field
+  v-model="form.productImage"
+  label="Product Image URL"
+  placeholder="https://example.com/image.jpg"
+  variant="outlined"
+  density="compact"
+/>
 
             </v-col>
             </v-row>
@@ -312,7 +318,8 @@ function openDialog(item=null) {
       form.value.productStatus = item.productStatus || ''
       form.value.ProductSku = item.ProductSku || ''
       form.value.productCategory = item.productCategory || ''
-      form.value.productImage = null
+      form.value.productImage = item.productImage 
+      // product_image.value = item.productImage
   
     }
     else {
@@ -460,6 +467,7 @@ function getImageUrl(path) {
   }
   onMounted(() => {
     fetchcategories();
+ 
     loadItems({page:1, itemsPerPage:itemsPerPage.value} )
     
   });
@@ -467,6 +475,8 @@ function getImageUrl(path) {
     axiosInst.delete(`/api/productdetail/${id}/`)
       .then(response => {
         console.log('Product deleted successfully:', response.data);
+        
+
         loadItems({ page: 1, itemsPerPage: itemsPerPage.value, sortBy: [] }); // Refresh the product list
         // Optionally, refresh the product list or handle UI updates
       })
@@ -474,7 +484,7 @@ function getImageUrl(path) {
         console.error('Error deleting product:', error);
       });
   }
-  
+
   watch(specificproduct =>{
        loadItems({ page: 1, itemsPerPage: itemsPerPage.value}); 
   }
