@@ -2,7 +2,7 @@
      <v-card-title class="pt-5">
      <v-row>
          
-            <v-col cols="8">
+            <v-col cols="10">
             <v-text-field
             variant="outlined"
             prepend-inner-icon="mdi-magnify"
@@ -16,13 +16,8 @@
             </v-text-field>
             </v-col>
         
-            <div class="d-flex justify-end ml-16">
-                <v-col>
-                    <v-icon style="cursor: pointer;" size="small">mdi-message-badge-outline</v-icon>
-                </v-col>
-                <v-col>
-                    <v-icon style="cursor: pointer;" size="small">mdi-bell-badge-outline</v-icon>
-                </v-col>
+            <div class="d-flex justify-end  float-right">
+             
                 <v-col  >
                     <v-img
                     :width="35"
