@@ -41,7 +41,7 @@
           v-bind="props"
           class="text-capitalize"
         >
-                  {{ person.fulname }}
+                  {{ person.fullname }}
                 <v-icon style="cursor: pointer;" size="small">mdi-menu-down</v-icon>
         </v-btn>
       </template>
@@ -75,7 +75,7 @@ import { AuthStore } from '@/stores/authstore'
 import { toast } from 'vue-sonner'
 const store = AuthStore()
 const loggingOut = ref(false)
-const person=localStorage.getItem('user')
+const person=ref(JSON.parse(localStorage.getItem('user')))
 const handleLogout = async () => {
   loggingOut.value = true
   try {

@@ -249,6 +249,6 @@ def exportorders(request):
  writer.writerow(['OrderId','OrderNumber','customeremail','datePurchased','paymentMethod','amountPaid','orderStatus'])
 
  for obj in query_set:
-     writer.writerow([obj.OrderId,obj.OrderNumber,obj.CustomerName,obj.datePurchased,obj.paymentMethod,obj.amountPaid,obj.orderStatus])
+     writer.writerow([obj.OrderId,obj.OrderNumber,obj.CustomerName.customeremail,obj.datePurchased,obj.paymentMethod,obj.amountPaid,obj.orderStatus])
  return response
 # Create your views here.
