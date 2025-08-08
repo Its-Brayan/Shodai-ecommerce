@@ -18,7 +18,7 @@ onMounted(async ()=>{
   <v-app>
     <v-layout>
       <MenuComponent v-if="routerready && !route.meta.hideNavigation"/>
-        <Toaster theme="light"  position ="top-right"/>
+        <Toaster theme="light" closeButton position ="top-right"/>
   <v-main>
      <RouterView />
     </v-main>

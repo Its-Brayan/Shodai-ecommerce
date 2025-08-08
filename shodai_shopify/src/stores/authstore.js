@@ -58,36 +58,36 @@ export const AuthStore = defineStore("authstore", () => {
   }
 
   // Login function
-  async function login(credentials) {
-    try {
-      // Your login logic here
-      // After successful login, update state
-      const userData = isUserLoggedIn()
-      if (userData) {
-        updateIsLoggedInToTrue(userData)
-        return true
-      }
-    } catch (error) {
-      console.error('Login failed:', error)
-      return false
-    }
-  }
+//   async function login(credentials) {
+//     try {
+//       // Your login logic here
+//       // After successful login, update state
+//       const userData = isUserLoggedIn()
+//       if (userData) {
+//         updateIsLoggedInToTrue(userData)
+//         return true
+//       }
+//     } catch (error) {
+//       console.error('Login failed:', error)
+//       return false
+//     }
+//   }
 
-  // Register function
-  async function register(userData) {
-    try {
-      // Your register logic here
-      // After successful registration, update state
-      const newUserData = isUserLoggedIn()
-      if (newUserData) {
-        updateIsLoggedInToTrue(newUserData)
-        return true
-      }
-    } catch (error) {
-      console.error('Registration failed:', error)
-      return false
-    }
-  }
+//   // Register function
+//   async function register(userData) {
+//     try {
+//       // Your register logic here
+//       // After successful registration, update state
+//       const newUserData = isUserLoggedIn()
+//       if (newUserData) {
+//         updateIsLoggedInToTrue(newUserData)
+//         return true
+//       }
+//     } catch (error) {
+//       console.error('Registration failed:', error)
+//       return false
+//     }
+//   }
 
   return {
     loggedIn,
@@ -95,8 +95,8 @@ export const AuthStore = defineStore("authstore", () => {
     updateIsLoggedInToTrue,
     updateIsLoggedInToFalse,
     logout,
-    login,
-    register,
+    // login,
+    // register,
     initializeAuth
   }
 })

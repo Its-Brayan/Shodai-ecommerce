@@ -337,9 +337,9 @@ const selectedpricerange=ref(null)
 const priceranges=ref([
   {text:'All',value:''},
   {text:'0-1000',value:'0-1000'},
-  {text:'1000-5000',value:'0-5000'},
-  {text:'5000-10000',value:'5000-10000'},
-  {text:'10000+',value:'10000-'}
+  {text:'1001-5000',value:'1001-5000'},
+  {text:'5001-10000',value:'5001-10000'},
+  {text:'10001+',value:'10001-'}
 ])
      
   const itemsPerPage = ref(5)
