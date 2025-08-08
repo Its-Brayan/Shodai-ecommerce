@@ -2,7 +2,7 @@
      <v-card-title class="pt-5">
      <v-row>
          
-            <v-col cols="10">
+            <v-col cols="9">
             <v-text-field
             variant="outlined"
             prepend-inner-icon="mdi-magnify"
@@ -16,7 +16,7 @@
             </v-text-field>
             </v-col>
         
-            <div class="d-flex justify-end  float-right">
+            <div class="d-flex justify-end ml-16 float-right">
              
                 <v-col  >
                     <v-img
