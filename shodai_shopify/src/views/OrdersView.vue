@@ -22,8 +22,8 @@
                     <v-col cols="5">
                          <v-btn 
                     prepend-icon="mdi-tray-arrow-down"
-                  
-                   
+                    :loading="loading"
+                    @click="exportorders"
                     variant="outlined"
                     width="200px"
                      size="large"
@@ -255,6 +255,7 @@ import dayjs from 'dayjs';
   import { onMounted, ref, watch} from 'vue'
   import axiosInst from '@/services/api.js' 
   import HeaderComponent from '@/components/HeaderComponent.vue'
+import { toast } from 'vue-sonner';
   const dialog = ref(false)
   const isediting = ref(false)
   const orderid = ref(null)
@@ -305,7 +306,7 @@ import dayjs from 'dayjs';
   ])
   const search = ref('')
   const serverItems = ref([])
-  const loading = ref(true)
+  const loading = ref(false)
   const totalItems = ref(0)
   const selectedtab = ref('')
   function loadItems ({ page, itemsPerPage, sortBy }) {
@@ -347,6 +348,36 @@ import dayjs from 'dayjs';
   amountPaid : '',
   orderStatus:''
   })
+
+  async function exportorders(){
+    loading.value=true
+    axiosInst.get(`api/exportorders/`,{
+      responseType:'blob',
+    })
+    .then(response =>{
+      const blob = new Blob([response.data],{type:'text/csv'})
+        const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+    
+        link.href = url;
+             link.download = 'Total_orders.csv'  // Fixed filename with extension
+        
+
+      document.body.appendChild(link)
+       
+      link.click()
+      document.body.removeChild(link)
+      loading.value=false
+      toast.success("Orders exported successfully")
+    }
+
+    ).catch(error =>{
+      toast.error("Error exporting orders",error)
+      loading.value=false
+    }
+
+    )
+  }
   function submitorder(){
     const formdata = {
       ...form.value

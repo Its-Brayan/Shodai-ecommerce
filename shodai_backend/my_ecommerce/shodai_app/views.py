@@ -4,10 +4,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth import authenticate, login
 from .models import *
+from django.http import HttpResponse
 from django.core.paginator import Paginator
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from .serializers import *
+import csv
 
 @api_view(['GET', 'POST'])
 def create_category(request):
@@ -237,4 +239,16 @@ def loginUser(request):
           'success':False,
           'message':'Invalid Credentials',
     }, status=status.HTTP_401_UNAUTHORIZED)
+@api_view(['GET'])
+def exportorders(request):
+ 
+ query_set = Orders.objects.all()
+ response = HttpResponse(content_type='text/csv')
+ response['content-Disposition'] = 'attachment;filename="orders.csv"'
+ writer = csv.writer(response)
+ writer.writerow(['OrderId','OrderNumber','customeremail','datePurchased','paymentMethod','amountPaid','orderStatus'])
+
+ for obj in query_set:
+     writer.writerow([obj.OrderId,obj.OrderNumber,obj.CustomerName,obj.datePurchased,obj.paymentMethod,obj.amountPaid,obj.orderStatus])
+ return response
 # Create your views here.
