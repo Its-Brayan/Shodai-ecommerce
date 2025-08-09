@@ -14,7 +14,8 @@ urlpatterns =[
     path('login/',loginUser),
     path('api/token/refresh',TokenRefreshView.as_view(),name="token_refresh"),
     path('exportorders/',exportorders),
-    path('exportcustomers/',exportcustomers)
+    path('exportcustomers/',exportcustomers),
+    path('getrecentorders/',getrecentorders)
 
 
 

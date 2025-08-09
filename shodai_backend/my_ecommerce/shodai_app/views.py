@@ -266,4 +266,24 @@ def exportcustomers(request):
     for obj in query_quest:
         writer.writerow([obj.customerName,obj.customerEmail,obj.customerLocation,obj.customerOrders,obj.cashSpent])
     return response
+@api_view(['GET'])
+def getrecentorders(request):
+    limit = request.GET.get('limit',None)
+    page = request.GET.get('page')
+    page_size = request.GET.get('itemsPerPage',5)
+    search_query = request.GET.get('search','')
+    query_set = Orders.objects.all()
+    if limit:
+        query_set=query_set.order_by('-datePurchased')[:int(limit)]
+    if search_query:
+        query_set = query_set.filter(OrderId__icontains=search_query)
+    paginator = Paginator(query_set, page_size)
+    page_obj = paginator.get_page(page)
+   
+    serializer = OrdersSerializer(page_obj.object_list,many=True)
+    return Response({
+        'count':paginator.count,
+        'page':page,
+       'results': serializer.data},status=status.HTTP_200_OK)
+
 # Create your views here.
