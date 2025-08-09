@@ -253,4 +253,17 @@ def exportorders(request):
  for obj in query_set:
      writer.writerow([obj.OrderId,obj.OrderNumber,obj.CustomerName.customerEmail,obj.datePurchased,obj.paymentMethod,obj.amountPaid,obj.orderStatus])
  return response
+@api_view(["GET"])
+def exportcustomers(request):
+    location = request.GET.get('location','')
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="customers.csv"'
+    writer = csv.writer(response)
+
+    query_quest = Customers.objects.all()
+    query_quest= query_quest.filter(customerLocation__icontains=location)
+    writer.writerow(['Customer Name','Customer Email','Location','Orders','Spent'])
+    for obj in query_quest:
+        writer.writerow([obj.customerName,obj.customerEmail,obj.customerLocation,obj.customerOrders,obj.cashSpent])
+    return response
 # Create your views here.

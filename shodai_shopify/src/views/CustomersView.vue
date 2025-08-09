@@ -21,7 +21,7 @@
                          <v-btn 
                     prepend-icon="mdi-tray-arrow-down"
                   
-                   
+                   @click="exportcustomers"
                     variant="outlined"
                     width="200px"
                      size="large"
@@ -330,5 +330,38 @@ else if(isediting.value==true){
 loadItems ({ page:1, itemsPerPage:itemsPerPage.value })
   }
 
+
   )
+
+  function exportcustomers(){
+    axiosInst.get(`api/exportcustomers/`,{
+      params:{
+        location:selectedtab.value
+      }
+    }
+
+    ).then(response=>{
+       const blob = new Blob([response.data],{type:'text/csv'})
+        const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+    
+        link.href = url;
+             link.download = 'Total_customers.csv'  // Fixed filename with extension
+        
+
+      document.body.appendChild(link)
+       
+      link.click()
+      document.body.removeChild(link)
+      loading.value=false
+      toast.success("Customers exported successfully")
+    }
+      
+    ).catch(error=>{
+      toast.error("Error exporting customers",error)
+      loading.value=false
+    }
+
+    )
+  }
 </script>
