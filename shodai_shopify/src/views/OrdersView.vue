@@ -353,7 +353,9 @@ import { toast } from 'vue-sonner';
     loading.value=true
     axiosInst.get(`api/exportorders/`,{
       responseType:'blob',
+      params:{
         status:selectedtab.value,
+      }
       
     })
     .then(response =>{

@@ -241,12 +241,12 @@ def loginUser(request):
     }, status=status.HTTP_401_UNAUTHORIZED)
 @api_view(['GET'])
 def exportorders(request):
- status = request.GET.get('status')
+ orderstatus = request.GET.get('status','')
  query_set = Orders.objects.all()
- if status:
-     query_set = query_set.filter(orderStatus__iexact=status)
+ if orderstatus:
+     query_set = query_set.filter(orderStatus__icontains=orderstatus)
  response = HttpResponse(content_type='text/csv')
- response['content-Disposition'] = 'attachment;filename="orders.csv"'
+ response['Content-Disposition'] = 'attachment; filename="orders.csv"'
  writer = csv.writer(response)
  writer.writerow(['OrderId','OrderNumber','customeremail','datePurchased','paymentMethod','amountPaid','orderStatus'])
  
