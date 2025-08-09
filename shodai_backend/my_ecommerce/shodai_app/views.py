@@ -247,8 +247,8 @@ def exportorders(request):
  response['content-Disposition'] = 'attachment;filename="orders.csv"'
  writer = csv.writer(response)
  writer.writerow(['OrderId','OrderNumber','customeremail','datePurchased','paymentMethod','amountPaid','orderStatus'])
-
+ 
  for obj in query_set:
-     writer.writerow([obj.OrderId,obj.OrderNumber,obj.CustomerName.customeremail,obj.datePurchased,obj.paymentMethod,obj.amountPaid,obj.orderStatus])
+     writer.writerow([obj.OrderId,obj.OrderNumber,obj.CustomerName.customerEmail,obj.datePurchased,obj.paymentMethod,obj.amountPaid,obj.orderStatus])
  return response
 # Create your views here.

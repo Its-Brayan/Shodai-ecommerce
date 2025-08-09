@@ -353,6 +353,7 @@ import { toast } from 'vue-sonner';
     loading.value=true
     axiosInst.get(`api/exportorders/`,{
       responseType:'blob',
+      
     })
     .then(response =>{
       const blob = new Blob([response.data],{type:'text/csv'})

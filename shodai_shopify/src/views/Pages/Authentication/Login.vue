@@ -93,7 +93,7 @@ let form = ref({
       if (!form.value) return
     loading.value = true
     const store = AuthStore()
-    setTimeout(() => (loading.value = false), 2000)
+    setTimeout(() => (loading.value = false), 3700)
      axiosInst.post(`api/login/`,formdata)
      .then( response =>{
         if(response.data.success){
