@@ -2,7 +2,7 @@
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import axiosInst from '@/services/api';
 import dayjs from 'dayjs';
- import { ref } from 'vue'
+ import { ref,onMounted } from 'vue'
 
   
   const itemsPerPage = ref(5)
@@ -52,9 +52,28 @@ import dayjs from 'dayjs';
    
   
   }
+  const allorders=ref()
   function formatdate(datestr){
     return dayjs(datestr).format('YYYY-MM-DD');
   }
+  function getorders(){
+    axiosInst.get(`api/createorder/`)
+    .then(response=>{
+        allorders.value = response.data.count
+        console.log("Fetched all orders")
+    
+  }
+)
+  .catch(error=>{
+    console.log("error fetching orders",error)
+  }
+)
+
+  }
+  onMounted(()=>{
+    getorders()
+  }
+  )
 
 </script>
 
@@ -128,7 +147,7 @@ import dayjs from 'dayjs';
 
                     <div class="text-capitalize text-grey-lighten-1">Total Orders</div>
                     <div class="text-capitalize text-grey-lighten-1">
-                       $44,722.88
+                       {{ allorders }}
                     </div>
                
               </v-card-title>
