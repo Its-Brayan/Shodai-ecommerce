@@ -106,7 +106,7 @@ let form = ref({
             localStorage.setItem('user',JSON.stringify(response.data.user))
              store.updateIsLoggedInToTrue()
             router.push('/dashboard')
-            toast.success(`Welocome back ${userdata.fullname}`)
+            toast.success(`Welcome back ${userdata.fullname}`)
         }
      }
         

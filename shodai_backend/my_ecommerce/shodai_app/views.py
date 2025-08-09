@@ -241,8 +241,10 @@ def loginUser(request):
     }, status=status.HTTP_401_UNAUTHORIZED)
 @api_view(['GET'])
 def exportorders(request):
- 
+ status = request.GET.get('status')
  query_set = Orders.objects.all()
+ if status:
+     query_set = query_set.filter(orderStatus__iexact=status)
  response = HttpResponse(content_type='text/csv')
  response['content-Disposition'] = 'attachment;filename="orders.csv"'
  writer = csv.writer(response)
