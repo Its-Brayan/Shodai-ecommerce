@@ -16,7 +16,8 @@ urlpatterns =[
     path('exportorders/',exportorders),
     path('exportcustomers/',exportcustomers),
     path('getrecentorders/',getrecentorders),
-    path('getallorders/',getallorders)
+    path('getallorders/',getallorders),
+      path('getallproducts/',getallproducts)
 
 
 

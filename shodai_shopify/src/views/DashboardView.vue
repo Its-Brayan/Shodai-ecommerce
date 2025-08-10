@@ -70,8 +70,24 @@ import dayjs from 'dayjs';
 )
 
   }
+  const allproducts = ref()
+  function getproducts(){
+    axiosInst.get(`api/getallproducts/`)
+    .then(response=>{
+        allproducts.value = response.data.count || response.data.length
+        console.log("Fetched all orders")
+    
+  }
+)
+  .catch(error=>{
+    console.log("error fetching orders",error)
+  }
+)
+
+  }
   onMounted(()=>{
     getorders()
+    getproducts()
   }
   )
 
@@ -169,7 +185,7 @@ import dayjs from 'dayjs';
 
                     <div class="text-capitalize text-grey-lighten-1">Total Products</div>
                     <div class="text-capitalize text-grey-lighten-1">
-                       $44,722.88
+                       {{ allproducts }}
                     </div>
                
               </v-card-title>

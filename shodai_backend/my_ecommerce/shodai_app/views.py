@@ -292,5 +292,14 @@ def getallorders(request):
     return Response(
         serializer.data,status=status.HTTP_200_OK
     )
+@api_view(['GET'])
+def getallproducts(request):
+    allproducts = Product.objects.all()
+    serializer = ProductSerializer(allproducts, many=True)
+    return Response(
+        serializer.data,status=status.HTTP_200_OK
+    )
+
+
 
 # Create your views here.
