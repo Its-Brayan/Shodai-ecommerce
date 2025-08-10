@@ -9,6 +9,7 @@ from django.core.paginator import Paginator
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny
 from .serializers import *
+from django.db.models import Sum
 import csv
 
 @api_view(['GET', 'POST'])
@@ -307,6 +308,17 @@ def getallcustomers(request):
         serializer.data,status=status.HTTP_200_OK
     )
 
+@api_view(['GET'])
+def gettotalearning(request):
+    orderstatus = request.GET.get('status')
+    order = Orders.objects.all()
+    if orderstatus:
+        order = order.filter(orderStatus__iexact=orderstatus)
+        total = order.aggregate(total_amount=Sum('amountPaid'))['total_amount'] or 0
 
+        return Response({
+        'results':total},status=status.HTTP_200_OK)
+   
+    
 
 # Create your views here.

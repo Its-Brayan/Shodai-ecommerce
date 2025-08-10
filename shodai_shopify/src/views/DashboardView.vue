@@ -100,10 +100,31 @@ import dayjs from 'dayjs';
 )
 
   }
+  const allearnings = ref()
+
+  function gettotalearning(){
+    axiosInst.get(`api/gettotalearning/`,{
+      params:{
+        status:"Completed"
+      }
+    })
+    .then(response=>{
+        allearnings.value = response.data.results
+        console.log("Fetched all earnings")
+    
+  }
+)
+  .catch(error=>{
+    console.log("error fetching all earnings",error)
+  }
+)
+
+  }
   onMounted(()=>{
     getorders()
     getproducts()
     getcustomers()
+    gettotalearning()
   }
   )
 
@@ -131,8 +152,8 @@ import dayjs from 'dayjs';
                 </v-row>
 
                     <div class="text-capitalize text-grey-lighten-1">Total Earning</div>
-                    <div class="text-capitalize text-grey-lighten-1">
-                       $44,722.88
+                    <div class="text-capitalize text-grey-darken-1">
+                       {{ allearnings}}
                     </div>
                
               </v-card-title>
@@ -153,7 +174,7 @@ import dayjs from 'dayjs';
                 </v-row>
 
                     <div class="text-capitalize text-grey-lighten-1">Total Customers</div>
-                    <div class="text-capitalize text-grey-lighten-1">
+                    <div class="text-capitalize  text-grey-darken-2">
                        {{ allcustomers }}
                     </div>
                
@@ -178,7 +199,7 @@ import dayjs from 'dayjs';
                 </v-row>
 
                     <div class="text-capitalize text-grey-lighten-1">Total Orders</div>
-                    <div class="text-capitalize text-grey-lighten-1">
+                    <div class="text-capitalize  text-grey-darken-2">
                        {{ allorders }}
                     </div>
                
@@ -200,7 +221,7 @@ import dayjs from 'dayjs';
                 </v-row>
 
                     <div class="text-capitalize text-grey-lighten-1">Total Products</div>
-                    <div class="text-capitalize text-grey-lighten-1">
+                    <div class="text-capitalize  text-grey-darken-2">
                        {{ allproducts }}
                     </div>
                
