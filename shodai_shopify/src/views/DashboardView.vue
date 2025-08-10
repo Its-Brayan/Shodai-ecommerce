@@ -57,9 +57,9 @@ import dayjs from 'dayjs';
     return dayjs(datestr).format('YYYY-MM-DD');
   }
   function getorders(){
-    axiosInst.get(`api/createorder/`)
+    axiosInst.get(`api/getallorders/`)
     .then(response=>{
-        allorders.value = response.data.count
+        allorders.value = response.data.count || response.data.length
         console.log("Fetched all orders")
     
   }

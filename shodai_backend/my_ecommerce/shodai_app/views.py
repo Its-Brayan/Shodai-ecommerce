@@ -285,5 +285,12 @@ def getrecentorders(request):
         'count':paginator.count,
         'page':page,
        'results': serializer.data},status=status.HTTP_200_OK)
+@api_view(['GET'])
+def getallorders(request):
+    orders = Orders.objects.all()
+    serializer = OrdersSerializer(orders, many=True)
+    return Response(
+        serializer.data,status=status.HTTP_200_OK
+    )
 
 # Create your views here.
