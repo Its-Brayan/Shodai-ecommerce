@@ -85,9 +85,25 @@ import dayjs from 'dayjs';
 )
 
   }
+  const allcustomers = ref()
+  function getcustomers(){
+    axiosInst.get(`api/getallcustomers/`)
+    .then(response=>{
+        allcustomers.value = response.data.count || response.data.length
+        console.log("Fetched all Customers")
+    
+  }
+)
+  .catch(error=>{
+    console.log("error fetching customers",error)
+  }
+)
+
+  }
   onMounted(()=>{
     getorders()
     getproducts()
+    getcustomers()
   }
   )
 
@@ -138,7 +154,7 @@ import dayjs from 'dayjs';
 
                     <div class="text-capitalize text-grey-lighten-1">Total Customers</div>
                     <div class="text-capitalize text-grey-lighten-1">
-                       $44,722.88
+                       {{ allcustomers }}
                     </div>
                
               </v-card-title>

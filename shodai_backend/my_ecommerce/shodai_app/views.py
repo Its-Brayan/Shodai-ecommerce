@@ -299,6 +299,13 @@ def getallproducts(request):
     return Response(
         serializer.data,status=status.HTTP_200_OK
     )
+@api_view(['GET'])
+def getallcustomers(request):
+    allcustomers = Customers.objects.all()
+    serializer = CustomerSerializer(allcustomers, many=True)
+    return Response(
+        serializer.data,status=status.HTTP_200_OK
+    )
 
 
 
