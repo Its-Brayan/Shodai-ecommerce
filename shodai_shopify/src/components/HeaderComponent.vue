@@ -1,23 +1,11 @@
 <template>
      <v-card-title class="pt-5">
-     <v-row>
+   
          
-            <v-col cols="9">
-            <v-text-field
-            variant="outlined"
-            prepend-inner-icon="mdi-magnify"
-            width="500px"
-            rounded="pill"
-            label="Search..."
-            density="compact"
-            color="grey-darken-2"
-            >
-
-            </v-text-field>
-            </v-col>
+          
         
-            <div class="d-flex justify-end ml-16 float-right">
-             
+            <div class=" float-right">
+             <v-row>
                 <v-col  >
                     <v-img
                     :width="35"
@@ -57,8 +45,9 @@
 
               
                 </v-col>
+                </v-row>
                 </div>
-            </v-row>
+      
           
         </v-card-title>
 </template>
